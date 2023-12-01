@@ -17,8 +17,8 @@
 ## For plugin developers:
 Requires Node 14.7 or greater. If you're having trouble with the default Node version on your system, look into nvm for managing Node versions.
 
-After loading the plugin into Figma, run:
-`npm install`
+After loading the plugin into Figma, run:  
+`npm install`  
 `npm run build`
 
 ## Have something to say or add?
