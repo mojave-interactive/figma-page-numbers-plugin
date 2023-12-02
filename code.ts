@@ -1,14 +1,15 @@
 class PageNumberer {
   frameMatrix: { x: number, y: number, frameNode: FrameNode }[] = []
   layersToNumber: { layer: TextNode, number: number }[] = []
+  leadingZeroes: number = 0
 
-  constructor() { 
+  constructor(leadingZeroes: number) {
+    this.leadingZeroes = leadingZeroes
     this.buildFrameMatrix()
   }
 
   public buildFrameMatrix() {
     const selectedNodes = figma.currentPage.selection
-    figma.notify(`Found ${selectedNodes.length} selected nodes.`)
     for (var node of selectedNodes) {
       if (node.type === 'FRAME' && node.visible && node.children.length > 0) {
         this.frameMatrix.push({ y: node.y, x: node.x, frameNode: node })
@@ -62,11 +63,32 @@ class PageNumberer {
   }
 
   setTextOfNode = (textNode: TextNode, text: string) => {
-    textNode.characters = text;
+    if (this.leadingZeroes === 0) {
+      textNode.characters = text
+    } else {
+      textNode.characters = this.padStart(text, this.leadingZeroes)
+    }
     return textNode;
+  }
+
+  padStart = (text: string, targetLength: number) => {
+    if (text.length >= targetLength) {
+      return text;
+    }
+    const padding = "0".repeat(targetLength - text.length);
+    return padding + text;
   }
 }    
 
-figma.skipInvisibleInstanceChildren = true
-const pageNumberer = new PageNumberer()
-pageNumberer.updatePageNumbersAndFinish()
+figma.showUI(__html__, { themeColors: true })
+figma.ui.onmessage = (message) => {
+  if(typeof message.leadingZeroes === "string") {
+    //debugger
+    const pageNumberer = new PageNumberer(parseInt(message.leadingZeroes))
+    pageNumberer.updatePageNumbersAndFinish()
+  }
+  else
+  {
+    figma.closePlugin()
+  }
+}
