@@ -8,7 +8,6 @@ class PageNumberer {
 
   public buildFrameMatrix() {
     const selectedNodes = figma.currentPage.selection
-    figma.notify(`Found ${selectedNodes.length} selected nodes.`)
     for (var node of selectedNodes) {
       if (node.type === 'FRAME' && node.visible && node.children.length > 0) {
         this.frameMatrix.push({ y: node.y, x: node.x, frameNode: node })
