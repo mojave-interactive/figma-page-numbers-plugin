@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Page Numbers - pagination plugin</title>
+    </head>
+    <script>
+        window.onload = function() {
+            document.getElementById('runPlugin').onclick = function() {
+                var leadingZeroes = document.querySelector('select[name="leadingZeroes"]').value;
+                parent.postMessage({ pluginMessage: {
+                    leadingZeroes: leadingZeroes
+                } }, '*')
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: var(--figma-color-bg);
+            color: var(--figma-color-text);
+        }
+    </style>
+    <body>
+        <form>
+            <label for="leadingZeroes">Leading zeroes style:</label>
+            <select name="leadingZeroes">
+                <option value="0" selected>None</option>
+                <option value="2">2-digit (e.g. 09, 10)</option>
+                <option value="3">3-digit (e.g. 009, 010)</option>
+            </select> 
+            <button id="runPlugin">Run!</button>
+        </form>
+    </body>
+</html>
