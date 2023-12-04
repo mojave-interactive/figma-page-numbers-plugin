@@ -6,8 +6,10 @@
         window.onload = function() {
             document.getElementById('runPlugin').onclick = function() {
                 var leadingZeroes = document.querySelector('select[name="leadingZeroes"]').value;
+                var numberFrames = document.querySelector('input[name="numberFrames"]').checked;
                 parent.postMessage({ pluginMessage: {
-                    leadingZeroes: leadingZeroes
+                    leadingZeroes: leadingZeroes,
+                    numberFrames: numberFrames
                 } }, '*')
             }
         }
@@ -20,12 +22,18 @@
     </style>
     <body>
         <form>
-            <label for="leadingZeroes">Leading zeroes style:</label>
-            <select name="leadingZeroes">
-                <option value="0" selected>None</option>
-                <option value="2">2-digit (e.g. 09, 10)</option>
-                <option value="3">3-digit (e.g. 009, 010)</option>
-            </select> 
+            <div>
+                <label for="leadingZeroes">Leading zeroes style:</label>
+                <select name="leadingZeroes">
+                    <option value="0" selected>None</option>
+                    <option value="2">2-digit (e.g. 09, 10)</option>
+                    <option value="3">3-digit (e.g. 009, 010)</option>
+                </select>
+            </div>
+            <div>
+                <label for="numberFrames">Prepend page number to frame name:</label>
+                <input type="checkbox" name="numberFrames" checked />
+            </div>
             <button id="runPlugin">Run!</button>
         </form>
     </body>
