@@ -1,8 +1,12 @@
 class PageNumberer {
   frameMatrix: { x: number, y: number, frameNode: FrameNode }[] = []
   layersToNumber: { layer: TextNode, number: number }[] = []
+  leadingZeroes: number = 0
+  numberFrames: boolean = true
 
-  constructor() { 
+  constructor(leadingZeroes: number, numberFrames: boolean) {
+    this.leadingZeroes = leadingZeroes
+    this.numberFrames = numberFrames
     this.buildFrameMatrix()
   }
 
@@ -26,6 +30,13 @@ class PageNumberer {
     var pageNumber = 1
     var fontsToLoad: FontName[] = []
     for (var frame of this.frameMatrix) {
+      if (this.numberFrames) {
+        if (frame.frameNode.name.match(/^\d*$/)){
+          frame.frameNode.name = pageNumber.toString()
+        } else {
+          frame.frameNode.name = frame.frameNode.name.replace(/^\d* ?-? ?/, pageNumber.toString() +  ' - ')
+        }
+      }
       var pageNumberLayers:TextNode[] = []
       //@ts-ignore - we're appropriately checking for the type of node
       pageNumberLayers = frame.frameNode.findAll(n => n.name === "page number" && n.type === "TEXT")
@@ -61,11 +72,31 @@ class PageNumberer {
   }
 
   setTextOfNode = (textNode: TextNode, text: string) => {
-    textNode.characters = text;
+    if (this.leadingZeroes === 0) {
+      textNode.characters = text
+    } else {
+      textNode.characters = this.padStart(text, this.leadingZeroes)
+    }
     return textNode;
+  }
+
+  padStart = (text: string, targetLength: number) => {
+    if (text.length >= targetLength) {
+      return text;
+    }
+    const padding = "0".repeat(targetLength - text.length);
+    return padding + text;
   }
 }    
 
-figma.skipInvisibleInstanceChildren = true
-const pageNumberer = new PageNumberer()
-pageNumberer.updatePageNumbersAndFinish()
+figma.showUI(__html__, { themeColors: true })
+figma.ui.onmessage = (message) => {
+  if(typeof message.leadingZeroes === "string") {
+    const pageNumberer = new PageNumberer(parseInt(message.leadingZeroes), message.numberFrames)
+    pageNumberer.updatePageNumbersAndFinish()
+  }
+  else
+  {
+    figma.closePlugin()
+  }
+}

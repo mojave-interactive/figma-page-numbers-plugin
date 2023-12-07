@@ -2,7 +2,7 @@
 
 ## To use:
 - Make sure each page (or slide or whatever you're numbering) is framed.
-- Arrange your page frames either A.) in a single vertical column, with the first page at the top or B.) in rows, with the first row at the top, and the first slide of each row at the left.
+- Arrange your page frames either A.) in one or more rows (recommended), with the first row at the top, and the first slide of each row at the left or B.) in a single vertical column, with the first page at the top.
 - Design the page numbers to your heart's content using placeholder digits. Make sure your design looks good with single digit numbers as well as two- and (if needed) three- digit numbers.
 - Anywhere your design includes a page number, make sure the *number only* is in a text layer with the exact name `page number`.
 - Select all of the page frames and run the plugin. The characters inside the `page number` text layers will be replaced with the page number of the containing frame.
