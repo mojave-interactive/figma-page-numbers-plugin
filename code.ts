@@ -1,23 +1,30 @@
 class PageNumberer {
-  frameMatrix: { x: number, y: number, frameNode: FrameNode }[] = []
+  selectedNodeMatrix: { x: number, y: number, selectedNode: BaseNode }[] = []
+  ignoreNonFrameNodes: boolean = true
   layersToNumber: { layer: TextNode, number: number }[] = []
   leadingZeroes: number = 0
-  numberFrames: boolean = true
+  numberSelectedNodes: boolean = true
 
-  constructor(leadingZeroes: number, numberFrames: boolean) {
+  constructor(ignoreNonFrameNodes: boolean, leadingZeroes: number, numberNodes: boolean) {
+    this.ignoreNonFrameNodes = ignoreNonFrameNodes
     this.leadingZeroes = leadingZeroes
-    this.numberFrames = numberFrames
+    this.numberSelectedNodes = numberNodes
     this.buildFrameMatrix()
   }
 
   public buildFrameMatrix() {
     const selectedNodes = figma.currentPage.selection
     for (var node of selectedNodes) {
-      if (node.type === 'FRAME' && node.visible && node.children.length > 0) {
-        this.frameMatrix.push({ y: node.y, x: node.x, frameNode: node })
+      //debugger
+      // @ts-expect-error
+      if (node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
+        if (this.ignoreNonFrameNodes && node.type !== 'FRAME') {
+          continue
+        }
+        this.selectedNodeMatrix.push({ y: node.y, x: node.x, selectedNode: node })
       }
     }
-    this.frameMatrix.sort((a, b) => {
+    this.selectedNodeMatrix.sort((a, b) => {
       if (a.y === b.y) {
         return a.x - b.x
       } else {
@@ -29,17 +36,17 @@ class PageNumberer {
   public updatePageNumbersAndFinish() {
     var pageNumber = 1
     var fontsToLoad: FontName[] = []
-    for (var frame of this.frameMatrix) {
-      if (this.numberFrames) {
-        if (frame.frameNode.name.match(/^\d*$/)){
-          frame.frameNode.name = pageNumber.toString()
+    for (var selection of this.selectedNodeMatrix) {
+      if (this.numberSelectedNodes) {
+        if (selection.selectedNode.name.match(/^\d*$/)){
+          selection.selectedNode.name = pageNumber.toString()
         } else {
-          frame.frameNode.name = frame.frameNode.name.replace(/^\d* ?-? ?/, pageNumber.toString() +  ' - ')
+          selection.selectedNode.name = selection.selectedNode.name.replace(/^\d* ?-? ?/, pageNumber.toString() +  ' - ')
         }
       }
       var pageNumberLayers:TextNode[] = []
       //@ts-ignore - we're appropriately checking for the type of node
-      pageNumberLayers = frame.frameNode.findAll(n => n.name === "page number" && n.type === "TEXT")
+      pageNumberLayers = selection.selectedNode.findAll(n => n.name === "page number" && n.type === "TEXT")
       if (pageNumberLayers.length > 0) {
         for (var layer of pageNumberLayers) {
           this.layersToNumber.push({ layer: layer, number: pageNumber })
@@ -92,7 +99,7 @@ class PageNumberer {
 figma.showUI(__html__, { themeColors: true, width: 600 })
 figma.ui.onmessage = (message) => {
   if(typeof message.leadingZeroes === "string") {
-    const pageNumberer = new PageNumberer(parseInt(message.leadingZeroes), message.numberFrames)
+    const pageNumberer = new PageNumberer(message.ignoreNonFrameNodes, parseInt(message.leadingZeroes), message.numberNodes)
     pageNumberer.updatePageNumbersAndFinish()
   }
   else
