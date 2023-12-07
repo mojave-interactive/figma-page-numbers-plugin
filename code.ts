@@ -89,7 +89,7 @@ class PageNumberer {
   }
 }    
 
-figma.showUI(__html__, { themeColors: true })
+figma.showUI(__html__, { themeColors: true, width: 600 })
 figma.ui.onmessage = (message) => {
   if(typeof message.leadingZeroes === "string") {
     const pageNumberer = new PageNumberer(parseInt(message.leadingZeroes), message.numberFrames)

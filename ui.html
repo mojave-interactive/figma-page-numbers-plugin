@@ -18,12 +18,16 @@
         body {
             background-color: var(--figma-color-bg);
             color: var(--figma-color-text);
+            font-family: sans-serif;
+        }
+        div {
+            padding-bottom: 0.75rem;
         }
     </style>
     <body>
         <form>
             <div>
-                <label for="leadingZeroes">Leading zeroes style:</label>
+                <label for="leadingZeroes">Leading zeroes style (does not apply to frame name):</label>
                 <select name="leadingZeroes">
                     <option value="0" selected>None</option>
                     <option value="2">2-digit (e.g. 09, 10)</option>
