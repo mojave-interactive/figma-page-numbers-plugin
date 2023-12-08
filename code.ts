@@ -2,12 +2,12 @@ class PageNumberer {
   selectedNodeMatrix: { x: number, y: number, selectedNode: BaseNode }[] = []
   ignoreNonFrameNodes: boolean = true
   layersToNumber: { layer: TextNode, number: number }[] = []
-  leadingZeroes: number = 0
+  leadingZeros: number = 0
   numberSelectedNodes: boolean = true
 
-  constructor(ignoreNonFrameNodes: boolean, leadingZeroes: number, numberNodes: boolean) {
+  constructor(ignoreNonFrameNodes: boolean, leadingZeros: number, numberNodes: boolean) {
     this.ignoreNonFrameNodes = ignoreNonFrameNodes
-    this.leadingZeroes = leadingZeroes
+    this.leadingZeros = leadingZeros
     this.numberSelectedNodes = numberNodes
     this.buildFrameMatrix()
   }
@@ -79,10 +79,10 @@ class PageNumberer {
   }
 
   setTextOfNode = (textNode: TextNode, text: string) => {
-    if (this.leadingZeroes === 0) {
+    if (this.leadingZeros === 0) {
       textNode.characters = text
     } else {
-      textNode.characters = this.padStart(text, this.leadingZeroes)
+      textNode.characters = this.padStart(text, this.leadingZeros)
     }
     return textNode;
   }
@@ -98,8 +98,8 @@ class PageNumberer {
 
 figma.showUI(__html__, { themeColors: true, width: 600 })
 figma.ui.onmessage = (message) => {
-  if(typeof message.leadingZeroes === "string") {
-    const pageNumberer = new PageNumberer(message.ignoreNonFrameNodes, parseInt(message.leadingZeroes), message.numberNodes)
+  if(typeof message.leadingZeros === "string") {
+    const pageNumberer = new PageNumberer(message.ignoreNonFrameNodes, parseInt(message.leadingZeros), message.numberNodes)
     pageNumberer.updatePageNumbersAndFinish()
   }
   else

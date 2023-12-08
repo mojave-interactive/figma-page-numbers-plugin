@@ -5,12 +5,12 @@
     <script>
         window.onload = function() {
             document.getElementById('runPlugin').onclick = function() {
-                var leadingZeroes = document.querySelector('select[name="leadingZeroes"]').value;
+                var leadingZeros = document.querySelector('select[name="leadingZeros"]').value;
                 var numberNodes = document.querySelector('input[name="numberNodes"]').checked;
                 var ignoreNonFrameNodes = document.querySelector('input[name="ignoreNonFrameNodes"]').checked;
                 parent.postMessage({ pluginMessage: {
                     ignoreNonFrameNodes: ignoreNonFrameNodes,
-                    leadingZeroes: leadingZeroes,
+                    leadingZeros: leadingZeros,
                     numberNodes: numberNodes
                 } }, '*')
             }
@@ -29,15 +29,15 @@
     <body>
         <form>
             <div>
-                <label for="leadingZeroes">Leading zeroes style (does not apply to frame or layer name):</label>
-                <select name="leadingZeroes">
+                <label for="leadingZeros">Leading zeros style:</label>
+                <select name="leadingZeros">
                     <option value="0" selected>None</option>
                     <option value="2">2-digit (e.g. 09, 10)</option>
                     <option value="3">3-digit (e.g. 009, 010)</option>
                 </select>
             </div>
             <div>
-                <label for="numberNodes">Prepend page number to frame or layer name:</label>
+                <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros):</label>
                 <input type="checkbox" name="numberNodes" checked />
             </div>            <div>
                 <label for="ignoreNonFrameNodes">Ignore non-frame nodes:</label>
