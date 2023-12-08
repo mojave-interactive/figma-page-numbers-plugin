@@ -5,13 +5,15 @@
     <script>
         window.onload = function() {
             document.getElementById('runPlugin').onclick = function() {
+                var ignoreNonFrameNodes = document.querySelector('input[name="ignoreNonFrameNodes"]').checked;
                 var leadingZeros = document.querySelector('select[name="leadingZeros"]').value;
                 var numberNodes = document.querySelector('input[name="numberNodes"]').checked;
-                var ignoreNonFrameNodes = document.querySelector('input[name="ignoreNonFrameNodes"]').checked;
+                var optionalPrefix = document.querySelector('input[name="optionalPrefix"]').value;
                 parent.postMessage({ pluginMessage: {
                     ignoreNonFrameNodes: ignoreNonFrameNodes,
                     leadingZeros: leadingZeros,
-                    numberNodes: numberNodes
+                    numberNodes: numberNodes,
+                    optionalPrefix: optionalPrefix
                 } }, '*')
             }
         }
@@ -39,9 +41,14 @@
             <div>
                 <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros):</label>
                 <input type="checkbox" name="numberNodes" checked />
-            </div>            <div>
+            </div>            
+            <div>
                 <label for="ignoreNonFrameNodes">Ignore non-frame nodes:</label>
                 <input type="checkbox" name="ignoreNonFrameNodes" checked />
+            </div>            
+            <div>
+                <label for="optionalPrefix">Optional prefix (e.g. "Page&nbsp;" or "p.&nbsp;"):</label>
+                <input type="text" name="optionalPrefix" />
             </div>
             <button id="runPlugin">Run!</button>
         </form>
