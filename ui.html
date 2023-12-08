@@ -9,11 +9,13 @@
                 var leadingZeros = document.querySelector('select[name="leadingZeros"]').value;
                 var numberNodes = document.querySelector('input[name="numberNodes"]').checked;
                 var optionalPrefix = document.querySelector('input[name="optionalPrefix"]').value;
+                var textLayerName = document.querySelector('input[name="textLayerName"]').value;
                 parent.postMessage({ pluginMessage: {
                     ignoreNonFrameNodes: ignoreNonFrameNodes,
                     leadingZeros: leadingZeros,
                     numberNodes: numberNodes,
-                    optionalPrefix: optionalPrefix
+                    optionalPrefix: optionalPrefix,
+                    textLayerName: textLayerName
                 } }, '*')
             }
         }
@@ -37,19 +39,23 @@
                     <option value="2">2-digit (e.g. 09, 10)</option>
                     <option value="3">3-digit (e.g. 009, 010)</option>
                 </select>
-            </div>
-            <div>
-                <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros):</label>
-                <input type="checkbox" name="numberNodes" checked />
-            </div>            
-            <div>
-                <label for="ignoreNonFrameNodes">Ignore non-frame nodes:</label>
-                <input type="checkbox" name="ignoreNonFrameNodes" checked />
-            </div>            
+            </div>         
             <div>
                 <label for="optionalPrefix">Optional prefix (e.g. "Page&nbsp;" or "p.&nbsp;"):</label>
                 <input type="text" name="optionalPrefix" />
             </div>
+            <div>
+                <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros):</label>
+                <input type="checkbox" name="numberNodes" checked />
+            </div>         
+            <div>
+                <label for="textLayerName">Name of text layers:</label>
+                <input type="text" name="textLayerName" value="page number" />
+            </div>          
+            <div>
+                <label for="ignoreNonFrameNodes">Ignore non-frame nodes:</label>
+                <input type="checkbox" name="ignoreNonFrameNodes" checked />
+            </div> 
             <button id="runPlugin">Run!</button>
         </form>
     </body>

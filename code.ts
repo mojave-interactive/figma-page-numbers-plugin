@@ -5,12 +5,20 @@ class PageNumberer {
   leadingZeros: number = 0
   numberSelectedNodes: boolean = true
   optionalPrefix: string = ""
+  textLayerName: string = "page number"
 
-  constructor(ignoreNonFrameNodes: boolean, leadingZeros: number, numberNodes: boolean, optionalPrefix: string = "") {
+  constructor(
+      ignoreNonFrameNodes: boolean, 
+      leadingZeros: number, 
+      numberNodes: boolean, 
+      optionalPrefix: string = "",
+      textLayerName: string = "page number"
+    ) {
     this.ignoreNonFrameNodes = ignoreNonFrameNodes
     this.leadingZeros = leadingZeros
     this.numberSelectedNodes = numberNodes
     this.optionalPrefix = optionalPrefix
+    this.textLayerName = textLayerName
     this.buildFrameMatrix()
   }
 
@@ -47,14 +55,14 @@ class PageNumberer {
       }
       var pageNumberLayers:TextNode[] = []
       //@ts-ignore - we're appropriately checking for the type of node
-      pageNumberLayers = selection.selectedNode.findAll(n => n.name === "page number" && n.type === "TEXT")
+      pageNumberLayers = selection.selectedNode.findAll(n => n.name === this.textLayerName && n.type === "TEXT")
       if (pageNumberLayers.length > 0) {
         for (var layer of pageNumberLayers) {
           this.layersToNumber.push({ layer: layer, number: pageNumber })
           this.checkForFontsToLoad(layer, fontsToLoad)
         }
       }
-      //increment even if the frame doesn't have a page number layer
+      //increment even if the frame doesn't have a layer with the name in textLayerName
       pageNumber++
     }
     // get an array of loadFontAsync() promises, one for each entry in foundFonts[]
@@ -104,7 +112,8 @@ figma.ui.onmessage = (message) => {
       message.ignoreNonFrameNodes, 
       parseInt(message.leadingZeros), 
       message.numberNodes, 
-      message.optionalPrefix
+      message.optionalPrefix,
+      message.textLayerName
     )
     pageNumberer.updatePageNumbersAndFinish()
   }
