@@ -1,17 +1,18 @@
 class PageNumberer {
   selectedNodeMatrix: { x: number, y: number, selectedNode: BaseNode }[] = []
-  ignoreNonFrameNodes: boolean = true
+  ignoreNonFrameNodes: boolean
   layersToNumber: { layer: TextNode, number: number }[] = []
-  leadingZeros: number = 0
-  numberSelectedNodes: boolean = true
-  optionalPrefix: string = ""
-  textLayerName: string = "page number"
+  leadingZeros: number
+  numberSelectedNodes: boolean
+  optionalPrefix: string
+  textLayerName: string
 
   constructor(
-      ignoreNonFrameNodes: boolean, 
-      leadingZeros: number, 
-      numberNodes: boolean, 
+      ignoreNonFrameNodes: boolean = true, 
+      leadingZeros: number = 0, 
+      numberNodes: boolean = true, 
       optionalPrefix: string = "",
+      rememberSettings: boolean = false,
       textLayerName: string = "page number"
     ) {
     this.ignoreNonFrameNodes = ignoreNonFrameNodes
@@ -19,6 +20,17 @@ class PageNumberer {
     this.numberSelectedNodes = numberNodes
     this.optionalPrefix = optionalPrefix
     this.textLayerName = textLayerName
+    if (rememberSettings) {
+      figma.clientStorage.setAsync('pageNumbererSettings', {
+        ignoreNonFrameNodes: ignoreNonFrameNodes,
+        leadingZeros: leadingZeros,
+        numberNodes: numberNodes,
+        optionalPrefix: optionalPrefix,
+        textLayerName: textLayerName
+      })
+    } else {
+      figma.clientStorage.deleteAsync('pageNumbererSettings')
+    }
     this.buildFrameMatrix()
   }
 
@@ -69,7 +81,7 @@ class PageNumberer {
     const fontPromises = fontsToLoad.map(f => figma.loadFontAsync(f));
     // text is set only after all fonts are loaded
     Promise.all(fontPromises).then(() => {
-        this.layersToNumber.map(l => this.setTextOfNode(l.layer, this.optionalPrefix + l.number.toString()))
+        this.layersToNumber.map(l => this.setTextOfNode(l.layer, this.optionalPrefix, l.number.toString()))
         figma.closePlugin();
     })
   }
@@ -87,11 +99,11 @@ class PageNumberer {
     return fontsToLoad;
   }
 
-  setTextOfNode = (textNode: TextNode, text: string) => {
+  setTextOfNode = (textNode: TextNode, prefix: string, text: string) => {
     if (this.leadingZeros === 0) {
       textNode.characters = text
     } else {
-      textNode.characters = this.padStart(text, this.leadingZeros)
+      textNode.characters = prefix + this.padStart(text, this.leadingZeros + 1)
     }
     return textNode;
   }
@@ -106,6 +118,11 @@ class PageNumberer {
 }    
 
 figma.showUI(__html__, { themeColors: true, width: 600 })
+figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
+  if (settings) {
+    figma.ui.postMessage(settings)
+  }
+})
 figma.ui.onmessage = (message) => {
   if(typeof message.leadingZeros === "string") {
     const pageNumberer = new PageNumberer(
@@ -113,6 +130,7 @@ figma.ui.onmessage = (message) => {
       parseInt(message.leadingZeros), 
       message.numberNodes, 
       message.optionalPrefix,
+      message.rememberSettings,
       message.textLayerName
     )
     pageNumberer.updatePageNumbersAndFinish()
