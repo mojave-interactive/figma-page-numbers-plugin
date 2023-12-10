@@ -4,17 +4,33 @@
     </head>
     <script>
         window.onload = function() {
+            onmessage = (event) => {
+                document.querySelector('input[name="ignoreNonFrameNodes"]').
+                    checked = event.data.pluginMessage.ignoreNonFrameNodes;
+                document.querySelector('select[name="leadingZeros"]').
+                    selectedIndex = event.data.pluginMessage.leadingZeros;
+                document.querySelector('input[name="numberNodes"]').
+                    checked = event.data.pluginMessage.numberNodes;
+                document.querySelector('input[name="optionalPrefix"]').
+                    value = event.data.pluginMessage.optionalPrefix;
+                document.querySelector('input[name="rememberSettings"]').
+                    checked = true; // if we are getting this message, the settings were saved
+                document.querySelector('input[name="textLayerName"]').
+                    value = event.data.pluginMessage.textLayerName;
+            }
             document.getElementById('runPlugin').onclick = function() {
                 var ignoreNonFrameNodes = document.querySelector('input[name="ignoreNonFrameNodes"]').checked;
                 var leadingZeros = document.querySelector('select[name="leadingZeros"]').value;
                 var numberNodes = document.querySelector('input[name="numberNodes"]').checked;
                 var optionalPrefix = document.querySelector('input[name="optionalPrefix"]').value;
+                var rememberSettings = document.querySelector('input[name="rememberSettings"]').checked;
                 var textLayerName = document.querySelector('input[name="textLayerName"]').value;
                 parent.postMessage({ pluginMessage: {
                     ignoreNonFrameNodes: ignoreNonFrameNodes,
                     leadingZeros: leadingZeros,
                     numberNodes: numberNodes,
                     optionalPrefix: optionalPrefix,
+                    rememberSettings: rememberSettings,
                     textLayerName: textLayerName
                 } }, '*')
             }
@@ -36,8 +52,8 @@
                 <label for="leadingZeros">Leading zeros style:</label>
                 <select name="leadingZeros">
                     <option value="0" selected>None</option>
-                    <option value="2">2-digit (e.g. 09, 10)</option>
-                    <option value="3">3-digit (e.g. 009, 010)</option>
+                    <option value="1">2-digit (e.g. 09, 10)</option>
+                    <option value="2">3-digit (e.g. 009, 010)</option>
                 </select>
             </div>         
             <div>
@@ -55,6 +71,10 @@
             <div>
                 <label for="ignoreNonFrameNodes">Ignore non-frame nodes:</label>
                 <input type="checkbox" name="ignoreNonFrameNodes" checked />
+            </div>          
+            <div>
+                <label for="rememberSettings">Remember my choices:</label>
+                <input type="checkbox" name="rememberSettings" checked />
             </div> 
             <button id="runPlugin">Run!</button>
         </form>
