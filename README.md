@@ -1,9 +1,10 @@
 # Page Numbers: a simple pagination plugin for Figma, made by Mojave Interactive
 
-## tl;dr instructions
+## Basic instructions
 - Design your page numbers however you want, using placeholder numbers. 
-- Name each text layer containing a page number `page number`.
+- Make sure every layer containing a page number is named `page number`.
 - Every page has to be framed.
+- Arrange the pages in rows, left to right.
 - Select all the framed pages.
 - Run the plugin.
 

@@ -45,13 +45,16 @@
         div {
             padding-bottom: 0.75rem;
         }
+        a {
+            color: var(--figma-color-text-brand);
+        }
     </style>
     <body>
         <h1>Options</h1>
-        <p><em>(If you followed the tl;dr instructions below, you don't need to change any of these options)</em></p>
+        <p><em>If you followed the basic instructions below, you don't need to change any of these options (but you can).</em></p>
         <form>
             <div>
-                <label for="leadingZeros">Leading zeros style:</label>
+                <label for="leadingZeros">Leading zeros style:</label><br>
                 <select name="leadingZeros">
                     <option value="0" selected>None</option>
                     <option value="1">2-digit (e.g. 09, 10)</option>
@@ -59,32 +62,33 @@
                 </select>
             </div>         
             <div>
-                <label for="optionalPrefix">Optional prefix (e.g. "Page&nbsp;" or "p.&nbsp;"):</label>
+                <label for="optionalPrefix">Optional prefix (e.g. "Page&nbsp;" or "p.&nbsp;"):</label><br>
                 <input type="text" name="optionalPrefix" />
-            </div>
-            <div>
-                <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros):</label>
-                <input type="checkbox" name="numberNodes" checked />
             </div>         
             <div>
-                <label for="textLayerName">Name of text layers:</label>
+                <label for="textLayerName">What is the name of text layers?</label><br>
                 <input type="text" name="textLayerName" value="page number" />
+            </div>
+            <div>
+                <input type="checkbox" name="numberNodes" checked />
+                <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros)</label>
             </div>          
             <div>
-                <label for="ignoreNonFrameNodes">Ignore non-frame nodes:</label>
                 <input type="checkbox" name="ignoreNonFrameNodes" checked />
+                <label for="ignoreNonFrameNodes">Ignore non-frame nodes</label>
             </div>          
             <div>
-                <label for="rememberSettings">Remember my choices:</label>
                 <input type="checkbox" name="rememberSettings" checked />
+                <label for="rememberSettings">Remember my choices</label>
             </div> 
             <button id="runPlugin">Run!</button>
         </form>
-        <h1>tl;dr instructions</h1>
+        <h1>Basic instructions</h1>
         <ul>
             <li>Design your page numbers however you want, using placeholder numbers.</li>
-            <li>Name each text layer containing a page number page number.</li>
-            <li>Every page has to be framed.</li>
+            <li>Make sure every layer containing a page number is named <code>page number</code>.</li>
+            <li>Every page or slide has to be framed.</li>
+            <li>Arrange the pages in rows, left to right.</li>
             <li>Select all the framed pages.</li>
             <li>Run the plugin.</li>
         </ul>
@@ -92,6 +96,9 @@
             For more detailed instructions and the source code, visit our 
             <a href="https://github.com/mojave-interactive/figma-page-numbers-plugin" 
                 target="_blank">GitHub page</a>."
+        </p>
+        <p>
+            This plugin was created by <a href="https://mojave.agency" target="_blank">Mojave Interactive</a>. You may submit feedback through GitHub or through our contact form.
         </p>
     </body>
 </html>
