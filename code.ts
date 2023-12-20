@@ -3,6 +3,7 @@ class PageNumberer {
   ignoreNonFrameNodes: boolean
   layersToNumber: { layer: TextNode, number: number }[] = []
   leadingZeros: number
+  highestIndex: number = -1
   numberSelectedNodes: boolean
   optionalPrefix: string
   textLayerName: string
@@ -36,11 +37,16 @@ class PageNumberer {
 
   public buildFrameMatrix() {
     const selectedNodes = figma.currentPage.selection
+    var currentIndex = 0
     for (var node of selectedNodes) {
       // @ts-expect-error
       if (node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
         if (this.ignoreNonFrameNodes && node.type !== 'FRAME') {
           continue
+        }
+        currentIndex = node.parent?.children.findIndex(n => n.id === node.id) || 0
+        if (this.highestIndex === -1 || currentIndex > this.highestIndex) {
+          this.highestIndex = currentIndex
         }
         this.selectedNodeMatrix.push({ y: node.y, x: node.x, selectedNode: node })
       }
@@ -58,6 +64,10 @@ class PageNumberer {
     var pageNumber = 1
     var fontsToLoad: FontName[] = []
     for (var selection of this.selectedNodeMatrix) {
+      //@ts-expect-error
+      selection.selectedNode.parent?.insertChild(this.highestIndex, selection.selectedNode)
+      this.highestIndex--
+      debugger
       if (this.numberSelectedNodes) {
         if (selection.selectedNode.name.match(/^\d*$/)){
           selection.selectedNode.name = pageNumber.toString()
