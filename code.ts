@@ -3,7 +3,7 @@ class PageNumberer {
   ignoreNonFrameNodes: boolean
   layersToNumber: { layer: TextNode, number: number }[] = []
   leadingZeros: number
-  highestIndex: number = -1
+  lowestIndex: number = -1
   numberSelectedNodes: boolean
   optionalPrefix: string
   textLayerName: string
@@ -45,8 +45,8 @@ class PageNumberer {
           continue
         }
         currentIndex = node.parent?.children.findIndex(n => n.id === node.id) || 0
-        if (this.highestIndex === -1 || currentIndex > this.highestIndex) {
-          this.highestIndex = currentIndex
+        if (this.lowestIndex === -1 || currentIndex < this.lowestIndex) {
+          this.lowestIndex = currentIndex
         }
         this.selectedNodeMatrix.push({ y: node.y, x: node.x, selectedNode: node })
       }
@@ -65,8 +65,7 @@ class PageNumberer {
     var fontsToLoad: FontName[] = []
     for (var selection of this.selectedNodeMatrix) {
       //@ts-expect-error
-      selection.selectedNode.parent?.insertChild(this.highestIndex, selection.selectedNode)
-      this.highestIndex--
+      selection.selectedNode.parent?.insertChild(this.lowestIndex, selection.selectedNode)
       debugger
       if (this.numberSelectedNodes) {
         if (selection.selectedNode.name.match(/^\d*$/)){
@@ -87,6 +86,7 @@ class PageNumberer {
       //increment even if the frame doesn't have a layer with the name in textLayerName
       pageNumber++
     }
+    console.log(this.lowestIndex)
     // get an array of loadFontAsync() promises, one for each entry in foundFonts[]
     const fontPromises = fontsToLoad.map(f => figma.loadFontAsync(f));
     // text is set only after all fonts are loaded
