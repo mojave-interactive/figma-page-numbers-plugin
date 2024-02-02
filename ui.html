@@ -113,6 +113,94 @@
         }
     </script>
     <style>
+        @font-face {
+        font-family: 'Seravek';
+        src: url('Seravek-MediumItalic.eot');
+        src: local('Seravek Medium Italic'), local('Seravek-MediumItalic'),
+            url('Seravek-MediumItalic.eot?#iefix') format('embedded-opentype'),
+            url('Seravek-MediumItalic.woff') format('woff'),
+            url('Seravek-MediumItalic.ttf') format('truetype');
+        font-weight: 500;
+        font-style: italic;
+        }
+        @font-face {
+        font-family: 'Seravek';
+        src: url('https://drive.google.com/uc?export=download&id=1MXvRou-pjK5pANIrkmurS94qPuRWcEWW') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1l2gVNQTaFCq6Pk6qF9QsUQNU1DkLOpb2') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=1unPKGEGByIf3yDlcO6AZXbW8XXkyvCpI') format('woff');
+        font-weight: normal;
+        font-style: italic;
+        }
+
+        @font-face {
+        font-family: 'Seravek';
+        src: url('https://drive.google.com/uc?export=download&id=1fnujESU1EziGaRbrZdKOp7Wnp7o4i-Ei') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1s74H9An2SECznwnShw-gZk8SeUVMtjS8') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=14-nDWrcPCNFh681Pr_weIzEx_LPqtEFj') format('woff');
+        font-weight: 300;
+        font-style: italic;
+        }
+
+        @font-face {
+        font-family: 'Sevarek';
+        src: url('https://drive.google.com/uc?export=download&id=1jX2ooDCS5TiTH7CdfkHA5URnNBVo2BiK') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1vtTeg-PnLRMBIymXrEq1TepWMbLU81Oq') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=1E--qqQ5ckfkVRuVYi1BlpxX8JNYfmswS') format('woff');
+        font-weight: bold;
+        font-style: normal;
+        }
+
+        @font-face {
+        font-family: 'Seravek';
+        src: url('https://drive.google.com/uc?export=download&id=17Y6Ll3ceLJtCWK57DhbaiJ5oxMr8wQmS') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1Nu5D0tGIsnE9ckhpAUhSrB21AjI2rWe7') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=18qTU1R5f5pXFqM3S6hNCQbMT7nt8gewB') format('woff');
+        font-weight: 500;
+        font-style: normal;
+        }
+        @font-face {
+        font-family: 'Sevarek';
+        src: url('https://drive.google.com/uc?export=download&id=1LbvvRn03Mm2XVofFXHVozB_fFdwZJhAZ') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1I_dz2sGgA54i444a4f_HaXPUUHtmOzWh') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=1vnSYoTLCSdqAzXnhkVCaAvUdOSvqh66H') format('woff');
+        font-weight: bold;
+        font-style: italic;
+        }
+        @font-face {
+        font-family: 'Seravek';
+        src: url('https://drive.google.com/uc?export=download&id=1n5Z_O7JGfjr03jOX-fQg4n8MpwVnpDpb') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1JdXf5hKNn2kg7R0KD21THURNW79ZzmJD') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=1dLLtXT6XSOUM1R5vvKO1Lfzn0nYxpT2-') format('woff');
+        font-weight: 200;
+        font-style: italic;
+        }
+
+        @font-face {
+        font-family: 'Seravek';
+        src: url('https://drive.google.com/uc?export=download&id=1neCWtfhGtQFMWLjWkYvGdJYMOWk5-IwN') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1gKygDcp6La6kI2oF2crbWJBRIFxK3Fgp') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=11CzuPBCiBp5QViGJ7wszIU40ZqWpLMVr') format('woff');
+        font-weight: 300;
+        font-style: normal;
+        }
+
+        @font-face {
+        font-family: 'Seravek';
+        src: url('https://drive.google.com/uc?export=download&id=1v-tZlZ4CV7-350ELYnbgNeh3aLHIdrpe') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=1AjDQYi7-hpFEPTCHE1OOSRyvFk0gHnnj') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=1_w4Vh7F55fBLIEE8nz5Q2VfeTcksNZo7') format('woff');
+        font-weight: 200;
+        font-style: normal;
+        }
+        @font-face {
+        font-family: 'Seravek';
+        src:  url('https://drive.google.com/uc?export=download&id=1MxbBLhRahxvoo36SeTg90OIvamWdB5vv') format('eot'),
+            url('https://drive.google.com/uc?export=download&id=15u9y9HtGEwWfmBseABd1ycO6Xv-xMSvR') format('ttf'),
+            url('https://drive.google.com/uc?export=download&id=1WquMYBnqk4txXB8Z9Ab2FVT4ocKxLlRA') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        }
+
         html {
             width: 100%;
         }
@@ -130,7 +218,7 @@
             width: 288px;
             margin: 0;
             overflow-x: clip;
-            font-family: sans-serif;
+            font-family: 'Seravek', sans-serif;
         }
         ::-webkit-scrollbar {
             width: 5px;
@@ -211,6 +299,7 @@
             padding: 0;
             border-radius: 16px;
             border: unset;
+            cursor: pointer;
 
             color: #FFF;
             font-size: 16px;
@@ -291,17 +380,18 @@
         .options {
             padding: 12px 16px;
         }
-        .advanced-options {
-            padding: 8px 16px;
+        .advanced-options,
+        .instruction-options {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             cursor: pointer;
+        }
+        .advanced-options {
+            padding: 8px 16px;
         }
         .instruction-options {
             padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            cursor: pointer;
         }
         .instruction-options h1 {
             font-size: 14px;
