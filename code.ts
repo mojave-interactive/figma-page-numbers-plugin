@@ -127,7 +127,7 @@ class PageNumberer {
   }
 }    
 
-figma.showUI(__html__, { themeColors: true, height: 450, width: 700 })
+figma.showUI(__html__, { themeColors: true, height: 470, width: 288 })
 figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
   if (settings) {
     figma.ui.postMessage(settings)
