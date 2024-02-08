@@ -11,8 +11,6 @@
   ],
   "networkAccess": {
     "allowedDomains": [
-      "https://db.onlinewebfonts.com",
-      "https://drive.google.com",
       "https://mojave.agency"
     ]
   }
