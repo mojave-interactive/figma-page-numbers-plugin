@@ -9,8 +9,8 @@
             document.querySelector('input[name="ignoreNonFrameNodes"]').checked =
                 event.data.pluginMessage.ignoreNonFrameNodes;
             document
-                .querySelector(".select")
-                .setAttribute("data-selected", event.data.pluginMessage.leadingZeros);
+                .querySelector('.select')
+                .setAttribute('data-selected', event.data.pluginMessage.leadingZeros);
             document.querySelector('input[name="numberNodes"]').checked =
                 event.data.pluginMessage.numberNodes;
             document.querySelector('input[name="optionalPrefix"]').value =
@@ -22,40 +22,40 @@
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach((cb) => {
             cb.addEventListener(
-                "click",
+                'click',
                 (e) => {
                     if (e.target.checked) {
-                        cb.parentElement.classList.add("checked");
+                        cb.parentElement.classList.add('checked');
                     } else {
-                        cb.parentElement.classList.remove("checked");
+                        cb.parentElement.classList.remove('checked');
                     }
                 },
                 false
             );
         });
 
-        const select = document.querySelector(".select");
-        const svgSelect = select.querySelector("svg");
+        const select = document.querySelector('.select');
+        const svgSelect = select.querySelector('svg');
         const selectOptionsWrapper = document.querySelector(
-            ".select-options-wrapper"
+            '.select-options-wrapper'
         );
         const close = () => {
-            selectOptionsWrapper.classList.add("hidden");
-            selectOptionsWrapper.setAttribute("data-value", 0);
-            svgSelect.classList.remove("opened");
+            selectOptionsWrapper.classList.add('hidden');
+            selectOptionsWrapper.setAttribute('data-value', 0);
+            svgSelect.classList.remove('opened');
         };
         select.addEventListener(
-            "click",
+            'click',
             (e) => {
                 const opened = Number(
-                    selectOptionsWrapper.getAttribute("data-value")
+                    selectOptionsWrapper.getAttribute('data-value')
                 );
                 if (opened) {
                     close();
                 } else {
-                    selectOptionsWrapper.classList.remove("hidden");
-                    selectOptionsWrapper.setAttribute("data-value", 1);
-                    svgSelect.classList.add("opened");
+                    selectOptionsWrapper.classList.remove('hidden');
+                    selectOptionsWrapper.setAttribute('data-value', 1);
+                    svgSelect.classList.add('opened');
                 }
             },
             false
@@ -63,75 +63,75 @@
 
         Array.from(selectOptionsWrapper.children).forEach((el) => {
             el.addEventListener(
-                "click",
+                'click',
                 (e) => {
-                    const value = Number(el.getAttribute("data-select-value"));
-                    select.setAttribute("data-selected", value);
-                    select.querySelector("span").innerText = el.innerText;
+                    const value = Number(el.getAttribute('data-select-value'));
+                    select.setAttribute('data-selected', value);
+                    select.querySelector('span').innerText = el.innerText;
                     close();
                 },
                 false
             );
         });
 
-        const advancedOptions = document.querySelector(".advanced-options");
+        const advancedOptions = document.querySelector('.advanced-options');
         const advancedOptionsWrapper = document.querySelector(
-            ".advanced-options-wrapper"
+            '.advanced-options-wrapper'
         );
         const plusIcon = advancedOptions.querySelector('[data-id="plus-icon"]');
         const minusIcon = advancedOptions.querySelector('[data-id="minus-icon"]');
 
         advancedOptions.addEventListener(
-            "click",
+            'click',
             () => {
                 const opened = Number(
-                    advancedOptionsWrapper.getAttribute("data-value")
+                    advancedOptionsWrapper.getAttribute('data-value')
                 );
                 if (opened) {
-                    advancedOptionsWrapper.classList.add("hidden");
-                    advancedOptionsWrapper.setAttribute("data-value", 0);
-                    plusIcon.classList.remove("hidden");
-                    minusIcon.classList.add("hidden");
+                    advancedOptionsWrapper.classList.add('hidden');
+                    advancedOptionsWrapper.setAttribute('data-value', 0);
+                    plusIcon.classList.remove('hidden');
+                    minusIcon.classList.add('hidden');
                 } else {
-                    advancedOptionsWrapper.classList.remove("hidden");
-                    advancedOptionsWrapper.setAttribute("data-value", 1);
-                    plusIcon.classList.add("hidden");
-                    minusIcon.classList.remove("hidden");
+                    advancedOptionsWrapper.classList.remove('hidden');
+                    advancedOptionsWrapper.setAttribute('data-value', 1);
+                    plusIcon.classList.add('hidden');
+                    minusIcon.classList.remove('hidden');
                 }
             },
             false
         );
 
-        const instructionOptions = document.querySelector(".instruction-options");
-        const svgInstructions = instructionOptions.querySelector("svg");
+        const instructionOptions = document.querySelector('.instruction-options');
+        const svgInstructions = instructionOptions.querySelector('svg');
         const instructionOptionsWrapper = document.querySelector(
-            ".instruction-options-wrapper"
+            '.instruction-options-wrapper'
         );
         instructionOptions.addEventListener(
-            "click",
+            'click',
             (e) => {
                 const opened = Number(
-                    instructionOptionsWrapper.getAttribute("data-value")
+                    instructionOptionsWrapper.getAttribute('data-value')
                 );
                 if (opened) {
-                    instructionOptionsWrapper.classList.add("hidden");
-                    instructionOptionsWrapper.setAttribute("data-value", 0);
-                    svgInstructions.classList.remove("opened");
+                    instructionOptionsWrapper.classList.add('hidden');
+                    instructionOptionsWrapper.setAttribute('data-value', 0);
+                    svgInstructions.classList.remove('opened');
                 } else {
-                    instructionOptionsWrapper.classList.remove("hidden");
-                    instructionOptionsWrapper.setAttribute("data-value", 1);
-                    svgInstructions.classList.add("opened");
+                    instructionOptionsWrapper.classList.remove('hidden');
+                    instructionOptionsWrapper.setAttribute('data-value', 1);
+                    svgInstructions.classList.add('opened');
                 }
             },
             false
         );
 
-        document.getElementById("runPlugin").onclick = function () {
+        document.getElementById('runPlugin').onclick = function () {
             var ignoreNonFrameNodes = document.querySelector(
                 'input[name="ignoreNonFrameNodes"]'
             ).checked;
             var leadingZeros = Number(
-                document.querySelector(".select").getAttribute("data-selected")
+                document.querySelector('.select').getAttribute('data-selected')
             );
             var numberNodes = document.querySelector(
                 'input[name="numberNodes"]'
@@ -156,7 +156,7 @@
                         textLayerName,
                     },
                 },
-                "*"
+                '*'
             );
         };
     };
@@ -280,6 +280,7 @@
         border: 1px solid #24646d;
         background: #effdff;
         height: 32px;
+        background-color: red;
 
         color: #24646d;
         font-size: 11px;
