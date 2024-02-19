@@ -6,11 +6,15 @@
 <script>
     window.onload = function () {
         onmessage = (event) => {
+            const selectedLeadingZeros = document.querySelector(
+                `[data-select-value="${event.data.pluginMessage.leadingZeros}"]`
+            ).innerText;
             document.querySelector('input[name="ignoreNonFrameNodes"]').checked =
                 event.data.pluginMessage.ignoreNonFrameNodes;
             document
                 .querySelector('.select')
                 .setAttribute('data-selected', event.data.pluginMessage.leadingZeros);
+            document.querySelector('.select span').innerText = selectedLeadingZeros;
             document.querySelector('input[name="numberNodes"]').checked =
                 event.data.pluginMessage.numberNodes;
             document.querySelector('input[name="optionalPrefix"]').value =
@@ -280,7 +284,6 @@
         border: 1px solid #24646d;
         background: #effdff;
         height: 32px;
-        background-color: red;
 
         color: #24646d;
         font-size: 11px;
