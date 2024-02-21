@@ -9,19 +9,29 @@
             const selectedLeadingZeros = document.querySelector(
                 `[data-select-value="${event.data.pluginMessage.leadingZeros}"]`
             ).innerText;
-            document.querySelector('input[name="ignoreNonFrameNodes"]').checked =
-                event.data.pluginMessage.ignoreNonFrameNodes;
             document
                 .querySelector('.select')
                 .setAttribute('data-selected', event.data.pluginMessage.leadingZeros);
             document.querySelector('.select span').innerText = selectedLeadingZeros;
-            document.querySelector('input[name="numberNodes"]').checked =
-                event.data.pluginMessage.numberNodes;
-            document.querySelector('input[name="optionalPrefix"]').value =
-                event.data.pluginMessage.optionalPrefix;
-            document.querySelector('input[name="rememberSettings"]').checked = true; // if we are getting this message, the settings were saved
             document.querySelector('input[name="textLayerName"]').value =
                 event.data.pluginMessage.textLayerName;
+            document.querySelector('input[name="optionalPrefix"]').value =
+                event.data.pluginMessage.optionalPrefix;
+
+            const numberNodesElement = document.querySelector('input[name="numberNodes"]');
+            const ignoreNonFrameNodesElement = document.querySelector('input[name="ignoreNonFrameNodes"]');
+            numberNodesElement.checked = event.data.pluginMessage.numberNodes;
+            ignoreNonFrameNodesElement.checked = event.data.pluginMessage.ignoreNonFrameNodes;
+
+            if (numberNodesElement.checked) {
+                numberNodesElement.parentElement.classList.add('checked');
+            }
+
+            if (ignoreNonFrameNodesElement.checked) {
+                ignoreNonFrameNodesElement.parentElement.classList.add('checked');
+            }
+
+            document.querySelector('input[name="rememberSettings"]').checked = true; // if we are getting this message, the settings were saved
         };
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach((cb) => {
@@ -604,7 +614,7 @@
             </div>
             <div class="checkbox-container">
                 <div class="checkbox-wrapper">
-                    <div class="custom-checkbox checked">
+                    <div class="custom-checkbox">
                         <input type="checkbox" name="numberNodes" checked />
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="Group">
@@ -619,7 +629,7 @@
                         leading zeros)</label>
                 </div>
                 <div class="checkbox-wrapper">
-                    <div class="custom-checkbox checked">
+                    <div class="custom-checkbox">
                         <input type="checkbox" name="ignoreNonFrameNodes" checked />
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="Group">
