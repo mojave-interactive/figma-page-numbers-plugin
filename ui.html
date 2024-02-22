@@ -1,70 +1,97 @@
 <html>
-    <head>
-        <title>Page Numbers - pagination plugin</title>
-    </head>
-    <script>
-        window.onload = function() {
-            onmessage = (event) => {
-                document.querySelector('input[name="ignoreNonFrameNodes"]').
-                    checked = event.data.pluginMessage.ignoreNonFrameNodes;
-                document.querySelector('.select').
-                     setAttribute('data-selected', event.data.pluginMessage.leadingZeros);
-                document.querySelector('input[name="numberNodes"]').
-                    checked = event.data.pluginMessage.numberNodes;
-                document.querySelector('input[name="optionalPrefix"]').
-                    value = event.data.pluginMessage.optionalPrefix;
-                document.querySelector('input[name="rememberSettings"]').
-                    checked = true; // if we are getting this message, the settings were saved
-                document.querySelector('input[name="textLayerName"]').
-                    value = event.data.pluginMessage.textLayerName;
-            }
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                cb.addEventListener('click', (e) => {
-                    if (e.target.checked) {
-                        cb.parentElement.classList.add('checked');
-                    } else {
-                        cb.parentElement.classList.remove('checked');
-                    }
-                }, false)
-            })
-            
-            const select = document.querySelector('.select');
-            const svgSelect = select.querySelector('svg');
-            const selectOptionsWrapper = document.querySelector('.select-options-wrapper');
-            const close = () => {
-                selectOptionsWrapper.classList.add('hidden');
-                selectOptionsWrapper.setAttribute('data-value', 0);
-                svgSelect.classList.remove('opened');
-            }
-            select.addEventListener('click', e => {
-                const opened = Number(selectOptionsWrapper.getAttribute('data-value'));
-                if(opened) {
+
+<head>
+    <title>Page Numbers - pagination plugin</title>
+</head>
+<script>
+    const styleCheckbox = (checkboxEl) => {
+        if (checkboxEl.checked) {
+            checkboxEl.parentElement.classList.add('checked');
+        } else {
+            checkboxEl.parentElement.classList.remove('checked');
+        }
+    }
+    window.onload = function () {
+        onmessage = (event) => {
+            const selectedLeadingZeros = document.querySelector(
+                `[data-select-value="${event.data.pluginMessage.leadingZeros}"]`
+            ).innerText;
+            document
+                .querySelector('.select')
+                .setAttribute('data-selected', event.data.pluginMessage.leadingZeros);
+            document.querySelector('.select span').innerText = selectedLeadingZeros;
+            document.querySelector('input[name="textLayerName"]').value =
+                event.data.pluginMessage.textLayerName;
+            document.querySelector('input[name="optionalPrefix"]').value =
+                event.data.pluginMessage.optionalPrefix;
+            const numberNodesElement = document.querySelector('input[name="numberNodes"]');
+            const ignoreNonFrameNodesElement = document.querySelector('input[name="ignoreNonFrameNodes"]');
+            numberNodesElement.checked = event.data.pluginMessage.numberNodes;
+            ignoreNonFrameNodesElement.checked = event.data.pluginMessage.ignoreNonFrameNodes;
+            styleCheckbox(numberNodesElement);
+            styleCheckbox(ignoreNonFrameNodesElement);
+        };
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((cb) => {
+            cb.addEventListener(
+                'click',
+                (e) => {
+                    styleCheckbox(e.target);
+                },
+                false
+            );
+        });
+        const select = document.querySelector('.select');
+        const svgSelect = select.querySelector('svg');
+        const selectOptionsWrapper = document.querySelector(
+            '.select-options-wrapper'
+        );
+        const close = () => {
+            selectOptionsWrapper.classList.add('hidden');
+            selectOptionsWrapper.setAttribute('data-value', 0);
+            svgSelect.classList.remove('opened');
+        };
+        select.addEventListener(
+            'click',
+            (e) => {
+                const opened = Number(
+                    selectOptionsWrapper.getAttribute('data-value')
+                );
+                if (opened) {
                     close();
                 } else {
                     selectOptionsWrapper.classList.remove('hidden');
                     selectOptionsWrapper.setAttribute('data-value', 1);
                     svgSelect.classList.add('opened');
                 }
-            }, false);
-
-            Array.from(selectOptionsWrapper.children).forEach(el => {
-                el.addEventListener('click', (e) => {
+            },
+            false
+        );
+        Array.from(selectOptionsWrapper.children).forEach((el) => {
+            el.addEventListener(
+                'click',
+                (e) => {
                     const value = Number(el.getAttribute('data-select-value'));
                     select.setAttribute('data-selected', value);
                     select.querySelector('span').innerText = el.innerText;
                     close();
-                }, false)
-            })
-
-            const advancedOptions = document.querySelector('.advanced-options');
-            const advancedOptionsWrapper = document.querySelector('.advanced-options-wrapper');
-            const plusIcon = advancedOptions.querySelector('[data-id="plus-icon"]')
-            const minusIcon = advancedOptions.querySelector('[data-id="minus-icon"]')
-
-            advancedOptions.addEventListener('click', () => {
-                const opened = Number(advancedOptionsWrapper.getAttribute('data-value'));
-                if(opened) {
+                },
+                false
+            );
+        });
+        const advancedOptions = document.querySelector('.advanced-options');
+        const advancedOptionsWrapper = document.querySelector(
+            '.advanced-options-wrapper'
+        );
+        const plusIcon = advancedOptions.querySelector('[data-id="plus-icon"]');
+        const minusIcon = advancedOptions.querySelector('[data-id="minus-icon"]');
+        advancedOptions.addEventListener(
+            'click',
+            () => {
+                const opened = Number(
+                    advancedOptionsWrapper.getAttribute('data-value')
+                );
+                if (opened) {
                     advancedOptionsWrapper.classList.add('hidden');
                     advancedOptionsWrapper.setAttribute('data-value', 0);
                     plusIcon.classList.remove('hidden');
@@ -75,15 +102,21 @@
                     plusIcon.classList.add('hidden');
                     minusIcon.classList.remove('hidden');
                 }
-
-            }, false)
-
-            const instructionOptions = document.querySelector('.instruction-options');
-            const svgInstructions = instructionOptions.querySelector('svg');
-            const instructionOptionsWrapper = document.querySelector('.instruction-options-wrapper');
-            instructionOptions.addEventListener('click', e => {
-                const opened = Number(instructionOptionsWrapper.getAttribute('data-value'));
-                if(opened) {
+            },
+            false
+        );
+        const instructionOptions = document.querySelector('.instruction-options');
+        const svgInstructions = instructionOptions.querySelector('svg');
+        const instructionOptionsWrapper = document.querySelector(
+            '.instruction-options-wrapper'
+        );
+        instructionOptions.addEventListener(
+            'click',
+            (e) => {
+                const opened = Number(
+                    instructionOptionsWrapper.getAttribute('data-value')
+                );
+                if (opened) {
                     instructionOptionsWrapper.classList.add('hidden');
                     instructionOptionsWrapper.setAttribute('data-value', 0);
                     svgInstructions.classList.remove('opened');
@@ -92,488 +125,553 @@
                     instructionOptionsWrapper.setAttribute('data-value', 1);
                     svgInstructions.classList.add('opened');
                 }
-            }, false);
-
-            document.getElementById('runPlugin').onclick = function() {
-                var ignoreNonFrameNodes = document.querySelector('input[name="ignoreNonFrameNodes"]').checked;
-                var leadingZeros = Number(document.querySelector('.select').getAttribute('data-selected'));
-                var numberNodes = document.querySelector('input[name="numberNodes"]').checked;
-                var optionalPrefix = document.querySelector('input[name="optionalPrefix"]').value;
-                var rememberSettings = document.querySelector('input[name="rememberSettings"]').checked;
-                var textLayerName = document.querySelector('input[name="textLayerName"]').value;
-                parent.postMessage({ pluginMessage: {
-                    ignoreNonFrameNodes,
-                    leadingZeros,
-                    numberNodes,
-                    optionalPrefix,
-                    rememberSettings,
-                    textLayerName
-                } }, '*')
-            }
-        }
-    </script>
-    <style>
-        @font-face {
-        font-family: 'Seravek';
-        src: url('Seravek-MediumItalic.eot');
-        src: local('Seravek Medium Italic'), local('Seravek-MediumItalic'),
-            url('Seravek-MediumItalic.eot?#iefix') format('embedded-opentype'),
-            url('Seravek-MediumItalic.woff') format('woff'),
-            url('Seravek-MediumItalic.ttf') format('truetype');
-        font-weight: 500;
-        font-style: italic;
-        }
-        @font-face {
-        font-family: 'Seravek';
-        src: url('https://drive.google.com/uc?export=download&id=1MXvRou-pjK5pANIrkmurS94qPuRWcEWW') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1l2gVNQTaFCq6Pk6qF9QsUQNU1DkLOpb2') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=1unPKGEGByIf3yDlcO6AZXbW8XXkyvCpI') format('woff');
-        font-weight: normal;
-        font-style: italic;
-        }
-
-        @font-face {
-        font-family: 'Seravek';
-        src: url('https://drive.google.com/uc?export=download&id=1fnujESU1EziGaRbrZdKOp7Wnp7o4i-Ei') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1s74H9An2SECznwnShw-gZk8SeUVMtjS8') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=14-nDWrcPCNFh681Pr_weIzEx_LPqtEFj') format('woff');
-        font-weight: 300;
-        font-style: italic;
-        }
-
-        @font-face {
-        font-family: 'Sevarek';
-        src: url('https://drive.google.com/uc?export=download&id=1jX2ooDCS5TiTH7CdfkHA5URnNBVo2BiK') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1vtTeg-PnLRMBIymXrEq1TepWMbLU81Oq') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=1E--qqQ5ckfkVRuVYi1BlpxX8JNYfmswS') format('woff');
+            },
+            false
+        );
+        document.getElementById('runPlugin').onclick = function () {
+            var ignoreNonFrameNodes = document.querySelector(
+                'input[name="ignoreNonFrameNodes"]'
+            ).checked;
+            var leadingZeros = Number(
+                document.querySelector('.select').getAttribute('data-selected')
+            );
+            var numberNodes = document.querySelector(
+                'input[name="numberNodes"]'
+            ).checked;
+            var optionalPrefix = document.querySelector(
+                'input[name="optionalPrefix"]'
+            ).value;
+            var rememberSettings = document.querySelector(
+                'input[name="rememberSettings"]'
+            ).checked;
+            var textLayerName = document.querySelector(
+                'input[name="textLayerName"]'
+            ).value;
+            parent.postMessage(
+                {
+                    pluginMessage: {
+                        ignoreNonFrameNodes,
+                        leadingZeros,
+                        numberNodes,
+                        optionalPrefix,
+                        rememberSettings,
+                        textLayerName,
+                    },
+                },
+                '*'
+            );
+        };
+    };
+</script>
+<style>
+    @font-face {
+        font-family: "Sevarek";
+        src: url("https://mojave.agency/_nuxt/fonts/SeravekWebBold.ccf3a86.eot") format("eot"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWebBold.720acf0.ttf") format("ttf"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWebBold.085ee1f.woff") format("woff");
         font-weight: bold;
         font-style: normal;
-        }
+    }
 
-        @font-face {
-        font-family: 'Seravek';
-        src: url('https://drive.google.com/uc?export=download&id=17Y6Ll3ceLJtCWK57DhbaiJ5oxMr8wQmS') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1Nu5D0tGIsnE9ckhpAUhSrB21AjI2rWe7') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=18qTU1R5f5pXFqM3S6hNCQbMT7nt8gewB') format('woff');
+    @font-face {
+        font-family: "Seravek";
+        src: url("https://mojave.agency/_nuxt/fonts/SeravekWebMedium.ced1f8a.eot") format("eot"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWebMedium.3f054e0.ttf") format("ttf"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWebMedium.699065d.woff") format("woff");
         font-weight: 500;
         font-style: normal;
-        }
-        @font-face {
-        font-family: 'Sevarek';
-        src: url('https://drive.google.com/uc?export=download&id=1LbvvRn03Mm2XVofFXHVozB_fFdwZJhAZ') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1I_dz2sGgA54i444a4f_HaXPUUHtmOzWh') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=1vnSYoTLCSdqAzXnhkVCaAvUdOSvqh66H') format('woff');
-        font-weight: bold;
-        font-style: italic;
-        }
-        @font-face {
-        font-family: 'Seravek';
-        src: url('https://drive.google.com/uc?export=download&id=1n5Z_O7JGfjr03jOX-fQg4n8MpwVnpDpb') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1JdXf5hKNn2kg7R0KD21THURNW79ZzmJD') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=1dLLtXT6XSOUM1R5vvKO1Lfzn0nYxpT2-') format('woff');
-        font-weight: 200;
-        font-style: italic;
-        }
+    }
 
-        @font-face {
-        font-family: 'Seravek';
-        src: url('https://drive.google.com/uc?export=download&id=1neCWtfhGtQFMWLjWkYvGdJYMOWk5-IwN') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1gKygDcp6La6kI2oF2crbWJBRIFxK3Fgp') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=11CzuPBCiBp5QViGJ7wszIU40ZqWpLMVr') format('woff');
+    @font-face {
+        font-family: "Seravek";
+        src: url("https://mojave.agency/_nuxt/fonts/SeravekWebLight.c044347.eot") format("eot"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWebLight.a33041d.ttf") format("ttf"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWebLight.f2d22b2.woff") format("woff");
         font-weight: 300;
         font-style: normal;
-        }
+    }
 
-        @font-face {
-        font-family: 'Seravek';
-        src: url('https://drive.google.com/uc?export=download&id=1v-tZlZ4CV7-350ELYnbgNeh3aLHIdrpe') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=1AjDQYi7-hpFEPTCHE1OOSRyvFk0gHnnj') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=1_w4Vh7F55fBLIEE8nz5Q2VfeTcksNZo7') format('woff');
-        font-weight: 200;
-        font-style: normal;
-        }
-        @font-face {
-        font-family: 'Seravek';
-        src:  url('https://drive.google.com/uc?export=download&id=1MxbBLhRahxvoo36SeTg90OIvamWdB5vv') format('eot'),
-            url('https://drive.google.com/uc?export=download&id=15u9y9HtGEwWfmBseABd1ycO6Xv-xMSvR') format('ttf'),
-            url('https://drive.google.com/uc?export=download&id=1WquMYBnqk4txXB8Z9Ab2FVT4ocKxLlRA') format('woff');
+    @font-face {
+        font-family: "Seravek";
+        src: url("https://mojave.agency/_nuxt/fonts/SeravekWeb.68c8319.eot") format("eot"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWeb.e2c345c.ttf") format("ttf"),
+            url("https://mojave.agency/_nuxt/fonts/SeravekWeb.6779d41.woff") format("woff");
         font-weight: normal;
         font-style: normal;
-        }
+    }
 
-        html {
-            width: 100%;
-        }
-        h1 {
-            margin: 0;
-        }
-        svg {
-            height: 16px;
-            width: 16px;
-        }
-        form {
-            margin-block-end: 0;
-        }
-        body {
-            width: 288px;
-            margin: 0;
-            overflow-x: clip;
-            font-family: 'Seravek', sans-serif;
-        }
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 40px;
-        }
-        ul {
-            display: block;
-            list-style-type: disc;
-            margin-block: 0;
-            padding-inline-start: 24px;
-        }
-        li {
-            font-size: 12px;
-            font-weight: 400;
-            line-height: 120%;
-            letter-spacing: 0.24px;
-        }
-        li:not(:last-child) {
-            margin-bottom: 16px;
-        }
-        .github-text {
-            font-size: 12px;
-            font-weight: 400;
-            line-height: 120%;
-            letter-spacing: 0.24px;
-        }
-        .github-text a{
-            color: currentColor;
+    html {
+        width: 100%;
+    }
 
-        }
-        .github-text span {
-            text-decoration-line: underline;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
-        }
-        /* ::-webkit-scrollbar-track-piece {
-            background-color: transparent;
-        } */
-        ::-webkit-scrollbar-thumb {
-            border-radius: 4px;
-            border: 0.25px solid var(--Secondary-Light-grey, #EEE);
-            background: var(--Secondary-Gray, #757575);
-            width: 5px;
-            height: 31px;
-            flex-shrink: 0;
-        }
-        input[type="text"], .select {
-            padding: 12px 16px;
-            border-radius: 4px;
-            border: 1px solid #24646D;
-            background: #EFFDFF;
-            height: 32px;
+    h1 {
+        margin: 0;
+    }
 
-            color: #24646D;
-            font-size: 11px;
-            font-weight: 400;
-            letter-spacing: 1.76px;
-        }
-        .select {
-            margin-top: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 16px;
-            cursor: pointer;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .button-wrapper {
-            padding: 24px 12px;
-        }
-        .button-wrapper button {
-            width: 100%;
-            height: 32px;
-            padding: 0;
-            border-radius: 16px;
-            border: unset;
-            cursor: pointer;
+    svg {
+        height: 16px;
+        width: 16px;
+    }
 
-            color: #FFF;
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 120%; /* 19.2px */
-            letter-spacing: 2.56px;
-            text-transform: uppercase;
-        }
-        .select-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        .select-options-wrapper {
-            position: absolute;
-            padding: 16px;
-            background: #FFFFFF;
-            display: flex;
-            border: 1px solid #24646D;
-            flex-direction: column;
-            gap: 16px;
-            width: 222px;
-            border-radius: 0px 4px 4px 4px;
-        }
-        .select-options-wrapper div {
-            cursor: pointer;
-            color: #24646D;
-            font-size: 12px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 120%; /* 14.4px */
-            letter-spacing: 1.92px;
-        }
-        .custom-checkbox {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            position: relative;
-        }
-        .opened {
-            transform: rotate(180deg);
-        }
-        input[type="checkbox"] {
-            appearance: none;
-            -webkit-appearance: none;
-            outline: none;
-            position: absolute;
-            margin: 0;
-            height: 16px;
-            width: 16px;
-            cursor: pointer;
-        }
-        input[type="text"]:focus-visible  {
-            outline: unset;
-        }
-        .input-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .select-wrapper label,
-        .input-wrapper label {
-            font-size: 11px;
-            font-weight: 600;
-            line-height: 120%; /* 13.2px */
-            letter-spacing: 1.65px;
-            text-transform: uppercase;
-        }
-        label span.example {
-            font-weight: 400;
-            text-transform: none;
-        }
-        .checkbox-wrapper {
-            display: flex;
-            gap: 8px;
-        }
-        .checkbox-wrapper label {
-            font-size: 12px;
-            font-weight: 400;
-            letter-spacing: 0.24px;
-        }
-        .options {
-            padding: 12px 16px;
-        }
-        .advanced-options,
-        .instruction-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-        .advanced-options {
-            padding: 8px 16px;
-        }
-        .instruction-options {
-            padding: 12px 16px;
-        }
-        .instruction-options h1 {
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 600;
-            line-height: 120%; /* 16.8px */
-            letter-spacing: 2.1px;
-            text-transform: uppercase;
-        }
-        .advanced-options h1,
-        .advanced-options div {
+    form {
+        margin-block-end: 0;
+    }
+
+    body {
+        width: 288px;
+        margin: 0;
+        overflow-x: clip;
+        font-family: "Seravek", sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 40px;
+    }
+
+    ul {
+        display: block;
+        list-style-type: disc;
+        margin-block: 0;
+        padding-inline-start: 24px;
+    }
+
+    li {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 120%;
+        letter-spacing: 0.24px;
+    }
+
+    li:not(:last-child) {
+        margin-bottom: 16px;
+    }
+
+    .github-text {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 120%;
+        letter-spacing: 0.24px;
+    }
+
+    .github-text a {
+        color: currentColor;
+    }
+
+    .github-text span {
+        text-decoration-line: underline;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        border: 0.25px solid var(--Secondary-Light-grey, #eee);
+        background: var(--Secondary-Gray, #757575);
+        width: 5px;
+        height: 31px;
+        flex-shrink: 0;
+    }
+
+    input[type="text"],
+    .select {
+        padding: 12px 16px;
+        border-radius: 4px;
+        border: 1px solid #24646d;
+        background: #effdff;
+        height: 32px;
+
+        color: #24646d;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 1.76px;
+    }
+
+    .select {
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        cursor: pointer;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .button-wrapper {
+        padding: 24px 12px;
+    }
+
+    .button-wrapper button {
+        width: 100%;
+        height: 32px;
+        padding: 0;
+        border-radius: 16px;
+        border: unset;
+        cursor: pointer;
+
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 120%;
+        /* 19.2px */
+        letter-spacing: 2.56px;
+        text-transform: uppercase;
+    }
+
+    .select-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .select-options-wrapper {
+        position: absolute;
+        padding: 16px;
+        background: #ffffff;
+        display: flex;
+        border: 1px solid #24646d;
+        flex-direction: column;
+        gap: 16px;
+        width: 222px;
+        border-radius: 0px 4px 4px 4px;
+    }
+
+    .select-options-wrapper div {
+        cursor: pointer;
+        color: #24646d;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 120%;
+        /* 14.4px */
+        letter-spacing: 1.92px;
+    }
+
+    .custom-checkbox {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        position: relative;
+    }
+
+    .opened {
+        transform: rotate(180deg);
+    }
+
+    input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        outline: none;
+        position: absolute;
+        margin: 0;
+        height: 16px;
+        width: 16px;
+        cursor: pointer;
+    }
+
+    input[type="text"]:focus-visible {
+        outline: unset;
+    }
+
+    .input-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .select-wrapper label,
+    .input-wrapper label {
         font-size: 11px;
         font-weight: 600;
-        line-height: 120%; /* 13.2px */
+        line-height: 120%;
+        /* 13.2px */
         letter-spacing: 1.65px;
         text-transform: uppercase;
-        }
-        .options h1 {
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 120%; /* 16.8px */
-            letter-spacing: 2.1px;
-            text-transform: uppercase;
-        }
-        .options-wrapper {
-            padding: 24px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        .advanced-options-wrapper {
-            padding: 24px 16px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        .instruction-options-wrapper {
-            padding: 16px 16px 24px;
-        }
-        .advanced-options-wrapper .checkbox-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .figma-dark body {
-            background-color: #1F1E1E;
-            color: #EFFDFF;
-        }
-        .figma-dark body .custom-checkbox {
-            background-color: #FFFFFF;
-            border: 1px solid #55929B;
-        }
-        .figma-light body {
-            background-color: #FFF;
-            color: #24646D;
-        }
-        .figma-light body .custom-checkbox {
-            background-color: #FFFFFF;
-            border: 1px solid #24646D;
+    }
 
-        }
-        .figma-dark body .custom-checkbox.checked,
-        .figma-dark body .button-wrapper button {
-            background-color: #55929B;
-        }
-        .figma-light .custom-checkbox.checked,
-        .figma-light .button-wrapper button {
-            background-color: #24646D;
-        }
-        
-        .figma-dark body .options,
-        .figma-dark body .advanced-options,
-        .figma-dark body .instruction-options {
-            background-color: #000;
-        }
+    label span.example {
+        font-weight: 400;
+        text-transform: none;
+    }
 
-        .figma-light body .options,
-        .figma-light body .advanced-options,
-        .figma-light body .instruction-options {
-            background-color: #EEE;
-        }
-    </style>
-    <body>
-        <div class="options">
-            <h1>Options</h1>
+    .checkbox-wrapper {
+        display: flex;
+        gap: 8px;
+    }
+
+    .checkbox-wrapper label {
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.24px;
+    }
+
+    .options {
+        padding: 12px 16px;
+    }
+
+    .advanced-options,
+    .instruction-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .advanced-options {
+        padding: 8px 16px;
+    }
+
+    .instruction-options {
+        padding: 12px 16px;
+    }
+
+    .instruction-options h1 {
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 120%;
+        /* 16.8px */
+        letter-spacing: 2.1px;
+        text-transform: uppercase;
+    }
+
+    .advanced-options h1,
+    .advanced-options div {
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 120%;
+        /* 13.2px */
+        letter-spacing: 1.65px;
+        text-transform: uppercase;
+    }
+
+    .options h1 {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 120%;
+        /* 16.8px */
+        letter-spacing: 2.1px;
+        text-transform: uppercase;
+    }
+
+    .options-wrapper {
+        padding: 24px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .advanced-options-wrapper {
+        padding: 24px 16px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .instruction-options-wrapper {
+        padding: 16px 16px 0px;
+    }
+
+    .created-by {
+        padding: 16px 16px 0;
+        margin-bottom: 16px;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 120%;
+        letter-spacing: 0.24px;
+    }
+
+    .created-by a {
+        color: currentColor;
+    }
+
+    .advanced-options-wrapper .checkbox-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .figma-dark body {
+        background-color: #1f1e1e;
+        color: #effdff;
+    }
+
+    .figma-dark body .custom-checkbox {
+        background-color: #ffffff;
+        border: 1px solid #55929b;
+    }
+
+    .figma-light body {
+        background-color: #fff;
+        color: #24646d;
+    }
+
+    .figma-light body .custom-checkbox {
+        background-color: #ffffff;
+        border: 1px solid #24646d;
+    }
+
+    .figma-dark body .custom-checkbox.checked,
+    .figma-dark body .button-wrapper button {
+        background-color: #55929b;
+    }
+
+    .figma-light .custom-checkbox.checked,
+    .figma-light .button-wrapper button {
+        background-color: #24646d;
+    }
+
+    .figma-dark body .options,
+    .figma-dark body .advanced-options,
+    .figma-dark body .instruction-options {
+        background-color: #000;
+    }
+
+    .figma-light body .options,
+    .figma-light body .advanced-options,
+    .figma-light body .instruction-options {
+        background-color: #eee;
+    }
+</style>
+
+<body>
+    <div class="options">
+        <h1>Options</h1>
+    </div>
+    <form>
+        <div class="options-wrapper">
+            <div class="select-wrapper">
+                <label for="leadingZeros">Leading zeros style:</label>
+                <div name="leadingZeros" class="select" data-selected="0">
+                    <span>None</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path
+                            d="M3.9128 4.83754C3.685 4.60974 3.31565 4.60974 3.08785 4.83754C2.86004 5.06535 2.86004 5.43469 3.08785 5.6625L6.58785 9.1625C6.81565 9.39031 7.185 9.39031 7.4128 9.1625L10.9128 5.6625C11.1406 5.43469 11.1406 5.06535 10.9128 4.83754C10.685 4.60974 10.3157 4.60974 10.0878 4.83754L7.00033 7.92506L3.9128 4.83754Z"
+                            fill="#24646D" />
+                    </svg>
+                </div>
+                <div class="select-options-wrapper hidden" data-value="0">
+                    <div data-select-value="0">None</div>
+                    <div data-select-value="1">2-digit (e.g. 09, 10)</div>
+                    <div data-select-value="2">3-digit (e.g. 009, 010)</div>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <label for="optionalPrefix">Optional prefix:<br />
+                    <span class="example">(e.g. "Page&nbsp;" or "p.&nbsp;")</span></label>
+                <input type="text" name="optionalPrefix" />
+            </div>
+            <div class="checkbox-wrapper">
+                <div class="custom-checkbox checked">
+                    <input type="checkbox" name="rememberSettings" checked />
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="Group">
+                            <g id="Group_2">
+                                <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white"
+                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <label for="rememberSettings">Remember my choices</label>
+            </div>
         </div>
-        <form>
-            <div class="options-wrapper">
-                <div class="select-wrapper">
-                    <label for="leadingZeros">Leading zeros style:</label>
-                    <div name="leadingZeros" class="select" data-selected="0">
-                        <span>None</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                            <path d="M3.9128 4.83754C3.685 4.60974 3.31565 4.60974 3.08785 4.83754C2.86004 5.06535 2.86004 5.43469 3.08785 5.6625L6.58785 9.1625C6.81565 9.39031 7.185 9.39031 7.4128 9.1625L10.9128 5.6625C11.1406 5.43469 11.1406 5.06535 10.9128 4.83754C10.685 4.60974 10.3157 4.60974 10.0878 4.83754L7.00033 7.92506L3.9128 4.83754Z" fill="#24646D"/>
+        <div class="advanced-options">
+            <h1>Advanced Options:</h1>
+            <svg data-id="plus-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"
+                fill="none">
+                <path
+                    d="M7.58301 2.91665C7.58301 2.59448 7.32184 2.33331 6.99967 2.33331C6.67751 2.33331 6.41634 2.59448 6.41634 2.91665V6.41665H2.91634C2.59418 6.41665 2.33301 6.67781 2.33301 6.99998C2.33301 7.32215 2.59418 7.58331 2.91634 7.58331H6.41634V11.0833C6.41634 11.4055 6.67751 11.6666 6.99967 11.6666C7.32184 11.6666 7.58301 11.4055 7.58301 11.0833V7.58331H11.083C11.4052 7.58331 11.6663 7.32215 11.6663 6.99998C11.6663 6.67781 11.4052 6.41665 11.083 6.41665H7.58301V2.91665Z"
+                    fill="currentColor" />
+            </svg>
+            <svg data-id="minus-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                viewBox="0 0 14 14" fill="none">
+                <path
+                    d="M2.91634 6.41669C2.59418 6.41669 2.33301 6.67785 2.33301 7.00002C2.33301 7.32219 2.59418 7.58335 2.91634 7.58335H11.083C11.4052 7.58335 11.6663 7.32219 11.6663 7.00002C11.6663 6.67785 11.4052 6.41669 11.083 6.41669H2.91634Z"
+                    fill="currentColor" />
+            </svg>
+        </div>
+        <div class="advanced-options-wrapper hidden" data-value="0">
+            <div class="input-wrapper">
+                <label for="textLayerName">name of the text layers?</label>
+                <input type="text" name="textLayerName" value="page number" />
+            </div>
+            <div class="checkbox-container">
+                <div class="checkbox-wrapper">
+                    <div class="custom-checkbox checked">
+                        <input type="checkbox" name="numberNodes" checked />
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Group">
+                                <g id="Group_2">
+                                    <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white"
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </g>
                         </svg>
                     </div>
-                    <div class="select-options-wrapper hidden" data-value="0">
-                        <div data-select-value="0">None</div>
-                        <div data-select-value="1">2-digit (e.g. 09, 10)</div>
-                        <div data-select-value="2">3-digit (e.g. 009, 010)</div>
-                    </div>
-                </div>         
-                <div class="input-wrapper">
-                    <label for="optionalPrefix">Optional prefix:<br />
-                    <span class="example">(e.g. "Page&nbsp;" or "p.&nbsp;")</span></label>
-                    <input type="text" name="optionalPrefix" />
+                    <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include
+                        leading zeros)</label>
                 </div>
                 <div class="checkbox-wrapper">
                     <div class="custom-checkbox checked">
-                        <input type="checkbox" name="rememberSettings" checked />
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Group"><g id="Group_2"><path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>
+                        <input type="checkbox" name="ignoreNonFrameNodes" checked />
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Group">
+                                <g id="Group_2">
+                                    <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white"
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </g>
+                        </svg>
                     </div>
-                    <label for="rememberSettings">Remember my choices</label>
-                </div> 
-            </div>         
-            <div class="advanced-options">
-                <h1>
-                    Advanced Options:
-                </h1>
-                <svg data-id="plus-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M7.58301 2.91665C7.58301 2.59448 7.32184 2.33331 6.99967 2.33331C6.67751 2.33331 6.41634 2.59448 6.41634 2.91665V6.41665H2.91634C2.59418 6.41665 2.33301 6.67781 2.33301 6.99998C2.33301 7.32215 2.59418 7.58331 2.91634 7.58331H6.41634V11.0833C6.41634 11.4055 6.67751 11.6666 6.99967 11.6666C7.32184 11.6666 7.58301 11.4055 7.58301 11.0833V7.58331H11.083C11.4052 7.58331 11.6663 7.32215 11.6663 6.99998C11.6663 6.67781 11.4052 6.41665 11.083 6.41665H7.58301V2.91665Z" fill="currentColor"/>
-                </svg>                    
-                <svg data-id="minus-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2.91634 6.41669C2.59418 6.41669 2.33301 6.67785 2.33301 7.00002C2.33301 7.32219 2.59418 7.58335 2.91634 7.58335H11.083C11.4052 7.58335 11.6663 7.32219 11.6663 7.00002C11.6663 6.67785 11.4052 6.41669 11.083 6.41669H2.91634Z" fill="currentColor"/>
-                </svg>
-            </div>
-            <div class="advanced-options-wrapper hidden" data-value="0">
-                <div class="input-wrapper">
-                    <label for="textLayerName">name of the text layers?</label>
-                    <input type="text" name="textLayerName" value="page number" />
-                </div>
-                <div class="checkbox-container">
-                    <div class="checkbox-wrapper">
-                        <div class="custom-checkbox checked">                        
-                            <input type="checkbox" name="numberNodes" checked />
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Group"><g id="Group_2"><path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>
-                        </div>
-                        <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros)</label>
-                    </div>          
-                    <div class="checkbox-wrapper">
-                        <div class="custom-checkbox checked">
-                            <input type="checkbox" name="ignoreNonFrameNodes" checked />
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="Group"><g id="Group_2"><path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>
-                        </div>
-                        <label for="ignoreNonFrameNodes">Ignore non-frame nodes</label>
-                    </div>
-                </div>
-            </div>
-            <div class="button-wrapper">
-                <button id="runPlugin">Run!</button>
-            </div>
-        </form>
-        <div class="instruction-options">
-            <h1>instructions</h1>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M5.03033 6.21967C4.73744 5.92678 4.26256 5.92678 3.96967 6.21967C3.67678 6.51256 3.67678 6.98744 3.96967 7.28033L8.46967 11.7803C8.76256 12.0732 9.23744 12.0732 9.53033 11.7803L14.0303 7.28033C14.3232 6.98744 14.3232 6.51256 14.0303 6.21967C13.7374 5.92678 13.2626 5.92678 12.9697 6.21967L9 10.1893L5.03033 6.21967Z" fill="currentColor"/>
-            </svg>
-        </div>
-        <div class="instruction-options-wrapper hidden" data-value="0">
-            <ul>
-                <li>Design your page numbers however you want, using placeholder numbers.</li>
-                <li>Make sure every layer containing a page number is named &quot;page number&quot;.</li>
-                <li>Every page or slide has to be framed.</li>
-                <li>Arrange the pages in rows, left to right.</li>
-                <li>Select all the framed pages.</li>
-                <li>Run the plugin.</li>
-            </ul>
-            <br>
-            <div class="github-text">
-                <div>
-                    For more detailed instructions and the source code, visit our 
-                    <a href="https://github.com/mojave-interactive/figma-page-numbers-plugin/blob/main/README.md" 
-                        target="_blank">GitHub README</a>.
-                </div>
-                <br>
-                <div>
-                    This plugin was created by <a href="https://mojave.agency" target="_blank">Mojave Interactive</a>. 
-                    You may submit feedback through our contact form.
+                    <label for="ignoreNonFrameNodes">Ignore non-frame nodes</label>
                 </div>
             </div>
         </div>
-    </body>
+        <div class="button-wrapper">
+            <button id="runPlugin">Run!</button>
+        </div>
+    </form>
+    <div class="instruction-options">
+        <h1>instructions</h1>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path
+                d="M5.03033 6.21967C4.73744 5.92678 4.26256 5.92678 3.96967 6.21967C3.67678 6.51256 3.67678 6.98744 3.96967 7.28033L8.46967 11.7803C8.76256 12.0732 9.23744 12.0732 9.53033 11.7803L14.0303 7.28033C14.3232 6.98744 14.3232 6.51256 14.0303 6.21967C13.7374 5.92678 13.2626 5.92678 12.9697 6.21967L9 10.1893L5.03033 6.21967Z"
+                fill="currentColor" />
+        </svg>
+    </div>
+    <div class="instruction-options-wrapper hidden" data-value="0">
+        <ul>
+            <li>
+                Design your page numbers however you want, using placeholder numbers.
+            </li>
+            <li>
+                Make sure every layer containing a page number is named &quot;page
+                number&quot;.
+            </li>
+            <li>Every page or slide has to be framed.</li>
+            <li>Arrange the pages in rows, left to right.</li>
+            <li>Select all the framed pages.</li>
+            <li>Run the plugin.</li>
+        </ul>
+        <br />
+        <div class="github-text">
+            <div>
+                For more detailed instructions and the source code, visit our
+                <a href="https://github.com/mojave-interactive/figma-page-numbers-plugin/blob/main/README.md"
+                    target="_blank">GitHub README</a>.
+            </div>
+        </div>
+    </div>
+    <div class="created-by">
+        This plugin was created by
+        <a href="https://mojave.agency" target="_blank">Mojave Interactive</a>. You may submit feedback through
+        our contact form.
+    </div>
+</body>
+
 </html>
