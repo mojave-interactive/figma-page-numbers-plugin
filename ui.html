@@ -4,6 +4,13 @@
     <title>Page Numbers - pagination plugin</title>
 </head>
 <script>
+    const styleCheckbox = (checkboxEl) => {
+        if (checkboxEl.checked) {
+            checkboxEl.parentElement.classList.add('checked');
+        } else {
+            checkboxEl.parentElement.classList.remove('checked');
+        }
+    }
     window.onload = function () {
         onmessage = (event) => {
             const selectedLeadingZeros = document.querySelector(
@@ -17,37 +24,23 @@
                 event.data.pluginMessage.textLayerName;
             document.querySelector('input[name="optionalPrefix"]').value =
                 event.data.pluginMessage.optionalPrefix;
-
             const numberNodesElement = document.querySelector('input[name="numberNodes"]');
             const ignoreNonFrameNodesElement = document.querySelector('input[name="ignoreNonFrameNodes"]');
             numberNodesElement.checked = event.data.pluginMessage.numberNodes;
             ignoreNonFrameNodesElement.checked = event.data.pluginMessage.ignoreNonFrameNodes;
-
-            if (numberNodesElement.checked) {
-                numberNodesElement.parentElement.classList.add('checked');
-            }
-
-            if (ignoreNonFrameNodesElement.checked) {
-                ignoreNonFrameNodesElement.parentElement.classList.add('checked');
-            }
-
-            document.querySelector('input[name="rememberSettings"]').checked = true; // if we are getting this message, the settings were saved
+            styleCheckbox(numberNodesElement);
+            styleCheckbox(ignoreNonFrameNodesElement);
         };
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach((cb) => {
             cb.addEventListener(
                 'click',
                 (e) => {
-                    if (e.target.checked) {
-                        cb.parentElement.classList.add('checked');
-                    } else {
-                        cb.parentElement.classList.remove('checked');
-                    }
+                    styleCheckbox(e.target);
                 },
                 false
             );
         });
-
         const select = document.querySelector('.select');
         const svgSelect = select.querySelector('svg');
         const selectOptionsWrapper = document.querySelector(
@@ -74,7 +67,6 @@
             },
             false
         );
-
         Array.from(selectOptionsWrapper.children).forEach((el) => {
             el.addEventListener(
                 'click',
@@ -87,14 +79,12 @@
                 false
             );
         });
-
         const advancedOptions = document.querySelector('.advanced-options');
         const advancedOptionsWrapper = document.querySelector(
             '.advanced-options-wrapper'
         );
         const plusIcon = advancedOptions.querySelector('[data-id="plus-icon"]');
         const minusIcon = advancedOptions.querySelector('[data-id="minus-icon"]');
-
         advancedOptions.addEventListener(
             'click',
             () => {
@@ -115,7 +105,6 @@
             },
             false
         );
-
         const instructionOptions = document.querySelector('.instruction-options');
         const svgInstructions = instructionOptions.querySelector('svg');
         const instructionOptionsWrapper = document.querySelector(
@@ -139,7 +128,6 @@
             },
             false
         );
-
         document.getElementById('runPlugin').onclick = function () {
             var ignoreNonFrameNodes = document.querySelector(
                 'input[name="ignoreNonFrameNodes"]'
@@ -614,7 +602,7 @@
             </div>
             <div class="checkbox-container">
                 <div class="checkbox-wrapper">
-                    <div class="custom-checkbox">
+                    <div class="custom-checkbox checked">
                         <input type="checkbox" name="numberNodes" checked />
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="Group">
@@ -629,7 +617,7 @@
                         leading zeros)</label>
                 </div>
                 <div class="checkbox-wrapper">
-                    <div class="custom-checkbox">
+                    <div class="custom-checkbox checked">
                         <input type="checkbox" name="ignoreNonFrameNodes" checked />
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="Group">

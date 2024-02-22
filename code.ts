@@ -85,7 +85,6 @@ class PageNumberer {
       //increment even if the frame doesn't have a layer with the name in textLayerName
       pageNumber++
     }
-    console.log(this.lowestIndex)
     // get an array of loadFontAsync() promises, one for each entry in foundFonts[]
     const fontPromises = fontsToLoad.map(f => figma.loadFontAsync(f))
     // text is set only after all fonts are loaded
