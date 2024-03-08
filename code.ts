@@ -17,7 +17,7 @@
  * please visit: https://www.gnu.org/licenses/gpl-3.0.html
  */
 class PageNumberer {
-  selectedNodeMatrix: { x: number, y: number, selectedNode: BaseNode }[] = []
+  selectedNodeMatrix: { x: number, y: number, selectedNode: FrameNode | GroupNode | ComponentNode }[] = []
   ignoreNonFrameNodes: boolean
   layersToNumber: { layer: TextNode, number: number }[] = []
   leadingZeros: number
@@ -53,12 +53,15 @@ class PageNumberer {
     this.buildFrameMatrix()
   }
 
+  private isNodeWithChildren(node: SceneNode): node is FrameNode | GroupNode | ComponentNode {
+    return 'children' in node
+  }
+
   public buildFrameMatrix() {
     const selectedNodes = figma.currentPage.selection
-    var currentIndex = 0
-    for (var node of selectedNodes) {
-      // @ts-expect-error
-      if (node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
+    let currentIndex = 0
+    for (const node of selectedNodes) {
+      if (this.isNodeWithChildren(node) && node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
         if (this.ignoreNonFrameNodes && node.type !== 'FRAME') {
           continue
         }
@@ -79,11 +82,10 @@ class PageNumberer {
   }
 
   public updatePageNumbersAndFinish() {
-    var pageNumber = 1
-    var fontsToLoad: FontName[] = []
-    for (var selection of this.selectedNodeMatrix) {
-      //@ts-expect-error
-      selection.selectedNode.parent?.insertChild(this.lowestIndex, selection.selectedNode)
+    let pageNumber = 1
+    const fontsToLoad: FontName[] = []
+    for (const selection of this.selectedNodeMatrix) {
+      selection.selectedNode.parent?.insertChild(this.lowestIndex, selection.selectedNode as SceneNode)
       if (this.numberSelectedNodes) {
         if (selection.selectedNode.name.match(/^\d*$/)){
           selection.selectedNode.name = pageNumber.toString()
@@ -91,11 +93,10 @@ class PageNumberer {
           selection.selectedNode.name = selection.selectedNode.name.replace(/^\d* ?-? ?/, pageNumber.toString() +  ' - ')
         }
       }
-      var pageNumberLayers:TextNode[] = []
-      //@ts-ignore - we're appropriately checking for the type of node
-      pageNumberLayers = selection.selectedNode.findAll(n => n.name === this.textLayerName && n.type === "TEXT")
+      let pageNumberLayers:TextNode[] = []
+      pageNumberLayers = selection.selectedNode.findAll(n => n.name === this.textLayerName && n.type === "TEXT") as TextNode[]
       if (pageNumberLayers.length > 0) {
-        for (var layer of pageNumberLayers) {
+        for (const layer of pageNumberLayers) {
           this.layersToNumber.push({ layer: layer, number: pageNumber })
           this.checkForFontsToLoad(layer, fontsToLoad)
         }
@@ -150,6 +151,7 @@ figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
   }
 })
 figma.ui.onmessage = (message) => {
+    debugger;
     const pageNumberer = new PageNumberer(
       message.ignoreNonFrameNodes, 
       message.leadingZeros, 

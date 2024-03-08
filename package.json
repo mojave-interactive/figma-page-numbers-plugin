@@ -5,12 +5,17 @@
   "main": "code.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "watch": "npm run build -- --watch"
+    "watch": "npm run build -- --watch",
+    "lint": "npx eslint ./code.ts"
   },
   "author": "",
   "license": "",
   "devDependencies": {
-    "@figma/plugin-typings": "^1.81.0",
+    "@figma/eslint-plugin-figma-plugins": "^0.14.0",
+    "@figma/plugin-typings": "^1.88.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "eslint": "^8.57.0",
     "typescript": "*"
   }
 }
