@@ -151,7 +151,6 @@ figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
   }
 })
 figma.ui.onmessage = (message) => {
-    debugger;
     const pageNumberer = new PageNumberer(
       message.ignoreNonFrameNodes, 
       message.leadingZeros, 
