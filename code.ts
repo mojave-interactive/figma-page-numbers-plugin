@@ -17,7 +17,7 @@
  * please visit: https://www.gnu.org/licenses/gpl-3.0.html
  */
 class PageNumberer {
-  selectedNodeMatrix: { x: number, y: number, selectedNode: FrameNode | GroupNode | ComponentNode }[] = []
+  selectedNodeMatrix: { x: number, y?: number, selectedNode: FrameNode | GroupNode | ComponentNode | SlideNode }[] = []
   ignoreNonFrameNodes: boolean
   layersToNumber: { layer: TextNode, number: number }[] = []
   leadingZeros: number
@@ -50,7 +50,12 @@ class PageNumberer {
     } else {
       figma.clientStorage.deleteAsync('pageNumbererSettings')
     }
-    this.buildFrameMatrix()
+
+    if (figma.editorType === 'figma') {
+      this.buildFrameMatrix()
+    } else if (figma.editorType === 'slides'){
+      this.buildFrameMatrixSlides()
+    }
   }
 
   private isNodeWithChildren(node: SceneNode): node is FrameNode | GroupNode | ComponentNode {
@@ -60,11 +65,13 @@ class PageNumberer {
   public buildFrameMatrix() {
     const selectedNodes = figma.currentPage.selection
     let currentIndex = 0
+
     for (const node of selectedNodes) {
       if (this.isNodeWithChildren(node) && node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
         if (this.ignoreNonFrameNodes && node.type !== 'FRAME') {
           continue
         }
+
         currentIndex = node.parent?.children.findIndex(n => n.id === node.id) || 0
         if (this.lowestIndex === -1 || currentIndex < this.lowestIndex) {
           this.lowestIndex = currentIndex
@@ -76,7 +83,7 @@ class PageNumberer {
       if (a.y === b.y) {
         return a.x - b.x
       } else {
-        return a.y - b.y
+        return a.y! - b.y!
       }
     })
   }
@@ -113,6 +120,41 @@ class PageNumberer {
     })
   }
 
+  public buildFrameMatrixSlides() {
+    const selectedNodes = figma.currentPage.selection.filter(n =>
+      n.type === 'SLIDE' && n.visible
+    ) as SlideNode[]
+    
+    for (let i = 0; i < selectedNodes.length; i++) {
+      const node = selectedNodes[i];
+      this.selectedNodeMatrix.push({ x: i, selectedNode: node })
+    }
+  }
+
+  public updatePageNumbersAndFinishSlides() {
+    let pageNumber = 1
+    const fontsToLoad: FontName[] = []
+
+    for (const selection of this.selectedNodeMatrix) {
+      let pageNumberLayers:TextNode[] = []
+      pageNumberLayers = selection.selectedNode.findAll(n => n.name === this.textLayerName && n.type === "TEXT") as TextNode[]
+      
+      if (pageNumberLayers.length > 0) {
+        for (const layer of pageNumberLayers) {
+          this.layersToNumber.push({ layer: layer, number: pageNumber })
+          this.checkForFontsToLoad(layer, fontsToLoad)
+        }
+      }
+      pageNumber++
+    }
+
+    const fontPromises = fontsToLoad.map(f => figma.loadFontAsync(f))
+    Promise.all(fontPromises).then(() => {
+        this.layersToNumber.map(l => this.setTextOfNode(l.layer, this.optionalPrefix, l.number.toString()))
+        figma.closePlugin()
+    })
+  }
+
   checkForFontsToLoad = (layer: TextNode, fontsToLoad: FontName[]) => {
     if (layer.hasMissingFont) {
       throw  "One or more fonts is missing."
@@ -131,6 +173,10 @@ class PageNumberer {
       textNode.characters = prefix + text
     } else {
       textNode.characters = prefix + this.padStart(text, this.leadingZeros + 1)
+    }
+
+    if (figma.editorType === 'slides') {
+      textNode.textAutoResize = "WIDTH_AND_HEIGHT"
     }
     return textNode
   }
@@ -159,5 +205,10 @@ figma.ui.onmessage = (message) => {
       message.rememberSettings,
       message.textLayerName
     )
-    pageNumberer.updatePageNumbersAndFinish()
+
+    if (figma.editorType === 'figma') {
+      pageNumberer.updatePageNumbersAndFinish();
+    } else if (figma.editorType === 'slides'){
+      pageNumberer.updatePageNumbersAndFinishSlides();
+    }
 }

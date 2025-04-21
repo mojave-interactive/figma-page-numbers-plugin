@@ -8,7 +8,8 @@
   "capabilities": [],
   "enableProposedApi": false,
   "editorType": [
-    "figma"
+    "figma",
+    "slides"
   ],
   "networkAccess": {
     "allowedDomains": [
