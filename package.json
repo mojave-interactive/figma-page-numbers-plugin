@@ -5,7 +5,7 @@
   "main": "code.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "watch": "npm run build -- --watch",
+    "watch": "tsc -p tsconfig.json --watch",
     "lint": "npx eslint ./code.ts"
   },
   "author": "",

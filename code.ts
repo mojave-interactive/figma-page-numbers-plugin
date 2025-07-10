@@ -25,6 +25,8 @@ class PageNumberer {
   numberSelectedNodes: boolean
   optionalPrefix: string
   textLayerName: string
+  ignoredNodes: SceneNode[] = []
+  nodesMissingTextLayer: (FrameNode | GroupNode | ComponentNode | SlideNode)[] = []
 
   constructor(
       ignoreNonFrameNodes: boolean = true, 
@@ -56,6 +58,7 @@ class PageNumberer {
     } else if (figma.editorType === 'slides'){
       this.buildFrameMatrixSlides()
     }
+    this.findNodesMissingTextLayer();
   }
 
   private isNodeWithChildren(node: SceneNode): node is FrameNode | GroupNode | ComponentNode {
@@ -69,6 +72,7 @@ class PageNumberer {
     for (const node of selectedNodes) {
       if (this.isNodeWithChildren(node) && node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
         if (this.ignoreNonFrameNodes && node.type !== 'FRAME') {
+          this.ignoredNodes.push(node);
           continue
         }
 
@@ -77,6 +81,8 @@ class PageNumberer {
           this.lowestIndex = currentIndex
         }
         this.selectedNodeMatrix.push({ y: node.y, x: node.x, selectedNode: node })
+      } else {
+        this.ignoredNodes.push(node);
       }
     }
     this.selectedNodeMatrix.sort((a, b) => {
@@ -86,6 +92,45 @@ class PageNumberer {
         return a.y! - b.y!
       }
     })
+  }
+
+  private findNodesMissingTextLayer() {
+    // Only check nodes that are targeted for numbering
+    for (const entry of this.selectedNodeMatrix) {
+      const node = entry.selectedNode;
+      const pageNumberLayers = node.findAll(n => n.name === this.textLayerName && n.type === "TEXT") as TextNode[];
+      if (pageNumberLayers.length === 0) {
+        this.nodesMissingTextLayer.push(node);
+      }
+    }
+  }
+
+  public getSummary() {
+    // Count selected nodes by type
+    const typeCounts: { [type: string]: number } = {};
+    for (const node of figma.currentPage.selection) {
+      typeCounts[node.type] = (typeCounts[node.type] || 0) + 1;
+    }
+    // Count ignored nodes by type
+    const ignoredTypeCounts: { [type: string]: number } = {};
+    for (const node of this.ignoredNodes) {
+      ignoredTypeCounts[node.type] = (ignoredTypeCounts[node.type] || 0) + 1;
+    }
+    // Count nodes missing text layer by type
+    const missingTextLayerTypeCounts: { [type: string]: number } = {};
+    for (const node of this.nodesMissingTextLayer) {
+      missingTextLayerTypeCounts[node.type] = (missingTextLayerTypeCounts[node.type] || 0) + 1;
+    }
+    return {
+      selectedCount: figma.currentPage.selection.length,
+      selectedTypeCounts: typeCounts,
+      ignoredCount: this.ignoredNodes.length,
+      ignoredTypeCounts: ignoredTypeCounts,
+      targetedCount: this.selectedNodeMatrix.length,
+      missingTextLayerCount: this.nodesMissingTextLayer.length,
+      missingTextLayerTypeCounts: missingTextLayerTypeCounts,
+      textLayerName: this.textLayerName
+    };
   }
 
   public updatePageNumbersAndFinish() {
@@ -190,13 +235,58 @@ class PageNumberer {
   }
 }    
 
-figma.showUI(__html__, { themeColors: true, height: 508, width: 288 })
+figma.showUI(__html__, { themeColors: true, height: 525, width: 288 })
+
+// Function to send selection info to UI
+function sendSelectionInfo() {
+  // Use default settings for preview (or retrieve from storage if needed)
+  figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
+    const opts = settings || {
+      ignoreNonFrameNodes: true,
+      leadingZeros: 0,
+      numberNodes: true,
+      optionalPrefix: '',
+      rememberSettings: false,
+      textLayerName: 'page number'
+    };
+    const pageNumberer = new PageNumberer(
+      opts.ignoreNonFrameNodes,
+      opts.leadingZeros,
+      opts.numberNodes,
+      opts.optionalPrefix,
+      opts.rememberSettings,
+      opts.textLayerName
+    );
+    figma.ui.postMessage({ type: 'selection-info', data: pageNumberer.getSummary(), settings: opts, editorType: figma.editorType });
+  });
+}
+
+// Send selection info on open
+sendSelectionInfo();
+
+// Send selection info on selection change
+figma.on('selectionchange', sendSelectionInfo);
+
 figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
   if (settings) {
     figma.ui.postMessage(settings)
   }
 })
 figma.ui.onmessage = (message) => {
+    // If previewOnly, just send summary for UI update
+    if (message.previewOnly) {
+      const pageNumberer = new PageNumberer(
+        message.ignoreNonFrameNodes, 
+        message.leadingZeros, 
+        message.numberNodes, 
+        message.optionalPrefix,
+        message.rememberSettings,
+        message.textLayerName
+      );
+      figma.ui.postMessage({ type: 'selection-info', data: pageNumberer.getSummary(), settings: message, editorType: figma.editorType });
+      return;
+    }
+    // Otherwise, run the plugin as normal
     const pageNumberer = new PageNumberer(
       message.ignoreNonFrameNodes, 
       message.leadingZeros, 
@@ -204,8 +294,7 @@ figma.ui.onmessage = (message) => {
       message.optionalPrefix,
       message.rememberSettings,
       message.textLayerName
-    )
-
+    );
     if (figma.editorType === 'figma') {
       pageNumberer.updatePageNumbersAndFinish();
     } else if (figma.editorType === 'slides'){

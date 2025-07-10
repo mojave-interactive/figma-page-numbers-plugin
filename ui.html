@@ -48,6 +48,30 @@
             ignoreNonFrameNodesElement.checked = event.data.pluginMessage.ignoreNonFrameNodes;
             styleCheckbox(numberNodesElement);
             styleCheckbox(ignoreNonFrameNodesElement);
+            if (event.data.pluginMessage && event.data.pluginMessage.type === 'selection-info') {
+                const data = event.data.pluginMessage.data;
+                const settings = event.data.pluginMessage.settings;
+                const editorType = event.data.pluginMessage.editorType;
+                // Count each type
+                const typeCounts = data.selectedTypeCounts;
+                const typeStrings = Object.entries(typeCounts).map(([type, count]) => `${count} ${type}${count > 1 ? 's' : ''}`);
+                document.getElementById('selection-info').textContent =
+                  data.selectedCount === 0
+                    ? 'No nodes selected'
+                    : `${typeStrings.join(', ')} selected`;
+                // Update advanced option label and visibility based on editorType
+                const ignoreCheckboxWrapper = document.querySelector('.advanced-options-wrapper .checkbox-wrapper:last-child');
+                if (ignoreCheckboxWrapper) {
+                  const ignoreLabel = ignoreCheckboxWrapper.querySelector('label');
+                  if (editorType === 'slides') {
+                    ignoreCheckboxWrapper.style.display = '';
+                    ignoreLabel.textContent = 'Ignore non-Slide nodes';
+                  } else {
+                    ignoreCheckboxWrapper.style.display = '';
+                    ignoreLabel.textContent = 'Ignore non-frame nodes';
+                  }
+                }
+            }
         };
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach((cb) => {
