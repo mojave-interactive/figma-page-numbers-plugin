@@ -19,6 +19,7 @@
 class PageNumberer {
   selectedNodeMatrix: { x: number, y?: number, selectedNode: FrameNode | GroupNode | ComponentNode | SlideNode }[] = []
   ignoreNonFrameNodes: boolean
+  ignoreNonSlideNodes: boolean
   layersToNumber: { layer: TextNode, number: number }[] = []
   leadingZeros: number
   lowestIndex: number = -1
@@ -30,6 +31,7 @@ class PageNumberer {
 
   constructor(
       ignoreNonFrameNodes: boolean = true, 
+      ignoreNonSlideNodes: boolean = true,
       leadingZeros: number = 0, 
       numberNodes: boolean = true, 
       optionalPrefix: string = "",
@@ -37,6 +39,7 @@ class PageNumberer {
       textLayerName: string = "page number"
     ) {
     this.ignoreNonFrameNodes = ignoreNonFrameNodes
+    this.ignoreNonSlideNodes = ignoreNonSlideNodes
     this.leadingZeros = leadingZeros
     this.numberSelectedNodes = numberNodes
     this.optionalPrefix = optionalPrefix
@@ -44,6 +47,7 @@ class PageNumberer {
     if (rememberSettings) {
       figma.clientStorage.setAsync('pageNumbererSettings', {
         ignoreNonFrameNodes: ignoreNonFrameNodes,
+        ignoreNonSlideNodes: ignoreNonSlideNodes,
         leadingZeros: leadingZeros,
         numberNodes: numberNodes,
         optionalPrefix: optionalPrefix,
@@ -61,7 +65,7 @@ class PageNumberer {
     this.findNodesMissingTextLayer();
   }
 
-  private isNodeWithChildren(node: SceneNode): node is FrameNode | GroupNode | ComponentNode {
+  private isNodeWithChildren(node: SceneNode): node is FrameNode | GroupNode | ComponentNode | SlideNode {
     return 'children' in node
   }
 
@@ -166,13 +170,20 @@ class PageNumberer {
   }
 
   public buildFrameMatrixSlides() {
-    const selectedNodes = figma.currentPage.selection.filter(n =>
-      n.type === 'SLIDE' && n.visible
-    ) as SlideNode[]
+    const selectedNodes = figma.currentPage.selection
+    let currentIndex = 0
     
-    for (let i = 0; i < selectedNodes.length; i++) {
-      const node = selectedNodes[i];
-      this.selectedNodeMatrix.push({ x: i, selectedNode: node })
+    for (const node of selectedNodes) {
+      if (this.isNodeWithChildren(node) && node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
+        if (this.ignoreNonSlideNodes && node.type !== 'SLIDE') {
+          this.ignoredNodes.push(node);
+          continue
+        }
+        this.selectedNodeMatrix.push({ x: currentIndex, selectedNode: node })
+        currentIndex++
+      } else {
+        this.ignoredNodes.push(node);
+      }
     }
   }
 
@@ -243,6 +254,7 @@ function sendSelectionInfo() {
   figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
     const opts = settings || {
       ignoreNonFrameNodes: true,
+      ignoreNonSlideNodes: true,
       leadingZeros: 0,
       numberNodes: true,
       optionalPrefix: '',
@@ -251,6 +263,7 @@ function sendSelectionInfo() {
     };
     const pageNumberer = new PageNumberer(
       opts.ignoreNonFrameNodes,
+      opts.ignoreNonSlideNodes,
       opts.leadingZeros,
       opts.numberNodes,
       opts.optionalPrefix,
@@ -277,6 +290,7 @@ figma.ui.onmessage = (message) => {
     if (message.previewOnly) {
       const pageNumberer = new PageNumberer(
         message.ignoreNonFrameNodes, 
+        message.ignoreNonSlideNodes,
         message.leadingZeros, 
         message.numberNodes, 
         message.optionalPrefix,
@@ -289,6 +303,7 @@ figma.ui.onmessage = (message) => {
     // Otherwise, run the plugin as normal
     const pageNumberer = new PageNumberer(
       message.ignoreNonFrameNodes, 
+      message.ignoreNonSlideNodes,
       message.leadingZeros, 
       message.numberNodes, 
       message.optionalPrefix,

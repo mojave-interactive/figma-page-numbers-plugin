@@ -31,46 +31,101 @@
     }
     window.onload = function () {
         onmessage = (event) => {
-            const selectedLeadingZeros = document.querySelector(
-                `[data-select-value="${event.data.pluginMessage.leadingZeros}"]`
-            ).innerText;
-            document
-                .querySelector('.select')
-                .setAttribute('data-selected', event.data.pluginMessage.leadingZeros);
-            document.querySelector('.select span').innerText = selectedLeadingZeros;
-            document.querySelector('input[name="textLayerName"]').value =
-                event.data.pluginMessage.textLayerName;
-            document.querySelector('input[name="optionalPrefix"]').value =
-                event.data.pluginMessage.optionalPrefix;
-            const numberNodesElement = document.querySelector('input[name="numberNodes"]');
-            const ignoreNonFrameNodesElement = document.querySelector('input[name="ignoreNonFrameNodes"]');
-            numberNodesElement.checked = event.data.pluginMessage.numberNodes;
-            ignoreNonFrameNodesElement.checked = event.data.pluginMessage.ignoreNonFrameNodes;
-            styleCheckbox(numberNodesElement);
-            styleCheckbox(ignoreNonFrameNodesElement);
             if (event.data.pluginMessage && event.data.pluginMessage.type === 'selection-info') {
                 const data = event.data.pluginMessage.data;
                 const settings = event.data.pluginMessage.settings;
                 const editorType = event.data.pluginMessage.editorType;
+                
+                // Update UI with settings
+                if (settings) {
+                    const selectedLeadingZeros = document.querySelector(
+                        `[data-select-value="${settings.leadingZeros}"]`
+                    ).innerText;
+                    document
+                        .querySelector('.select')
+                        .setAttribute('data-selected', settings.leadingZeros);
+                    document.querySelector('.select span').innerText = selectedLeadingZeros;
+                    document.querySelector('input[name="textLayerName"]').value =
+                        settings.textLayerName;
+                    document.querySelector('input[name="optionalPrefix"]').value =
+                        settings.optionalPrefix;
+                    const numberNodesElement = document.querySelector('input[name="numberNodes"]');
+                    const ignoreNonFrameNodesElement = document.querySelector('input[name="ignoreNonFrameNodes"]');
+                    const ignoreNonSlideNodesElement = document.querySelector('input[name="ignoreNonSlideNodes"]');
+                    numberNodesElement.checked = settings.numberNodes;
+                    ignoreNonFrameNodesElement.checked = settings.ignoreNonFrameNodes;
+                    ignoreNonSlideNodesElement.checked = settings.ignoreNonSlideNodes;
+                    styleCheckbox(numberNodesElement);
+                    styleCheckbox(ignoreNonFrameNodesElement);
+                    styleCheckbox(ignoreNonSlideNodesElement);
+                }
+                
                 // Count each type
                 const typeCounts = data.selectedTypeCounts;
                 const typeStrings = Object.entries(typeCounts).map(([type, count]) => `${count} ${type}${count > 1 ? 's' : ''}`);
-                document.getElementById('selection-info').textContent =
-                  data.selectedCount === 0
-                    ? 'No nodes selected'
-                    : `${typeStrings.join(', ')} selected`;
-                // Update advanced option label and visibility based on editorType
-                const ignoreCheckboxWrapper = document.querySelector('.advanced-options-wrapper .checkbox-wrapper:last-child');
-                if (ignoreCheckboxWrapper) {
-                  const ignoreLabel = ignoreCheckboxWrapper.querySelector('label');
-                  if (editorType === 'slides') {
-                    ignoreCheckboxWrapper.style.display = '';
-                    ignoreLabel.textContent = 'Ignore non-Slide nodes';
-                  } else {
-                    ignoreCheckboxWrapper.style.display = '';
-                    ignoreLabel.textContent = 'Ignore non-frame nodes';
+                // Render summary info above the RUN! button
+                const summaryInfo = document.getElementById('summary-info');
+                if (summaryInfo) {
+                  let html = '';
+                  if (data.selectedCount > 0) {
+                    html += `<div class="summary-title">`;
+                    html += `${data.targetedCount} FRAME${data.targetedCount === 1 ? '' : 'S'}`;
+                    if (data.ignoredTypeCounts && data.ignoredTypeCounts['GROUP']) {
+                      html += `, ${data.ignoredTypeCounts['GROUP']} GROUP${data.ignoredTypeCounts['GROUP'] === 1 ? '' : 'S'}`;
+                    }
+                    html += ' SELECTED</div>';
+                    let bullets = [];
+                    // Always show the page count
+                    let pageMsg = `We count ${data.targetedCount} pages.`;
+                    if (data.missingTextLayerCount > 0) {
+                      pageMsg += ` ${data.missingTextLayerCount} of them don't have a layer called '${data.textLayerName}', so they'll increment the page count, but won't be numbered.`;
+                    }
+                    bullets.push(pageMsg);
+                    const ignoredNodes = data.ignoredCount || 0;
+                    if (ignoredNodes > 0) {
+                      const nodeType = editorType === 'slides' ? 'slides' : 'frames';
+                      bullets.push(`${ignoredNodes} selected nodes are being ignored because they are not ${nodeType}. You can disable this in advanced settings.`);
+                    }
+                    if (data.numberSelectedNodes) {
+                      bullets.push('Selected nodes will be renamed.');
+                    }
+                    if (bullets.length > 0) {
+                      html += '<ul class="summary-bullets">' + bullets.map(b => `<li>${b}</li>`).join('') + '</ul>';
+                    }
                   }
+                  summaryInfo.innerHTML = html;
                 }
+                // Update advanced option visibility based on editorType
+                if (editorType === 'slides') {
+                  document.querySelectorAll('.slides-only').forEach(el => el.style.display = '');
+                  document.querySelectorAll('.design-only').forEach(el => el.style.display = 'none');
+                } else {
+                  document.querySelectorAll('.design-only').forEach(el => el.style.display = '');
+                  document.querySelectorAll('.slides-only').forEach(el => el.style.display = 'none');
+                }
+            } else if (event.data.pluginMessage && !event.data.pluginMessage.type) {
+                // Handle saved settings message
+                const settings = event.data.pluginMessage;
+                const selectedLeadingZeros = document.querySelector(
+                    `[data-select-value="${settings.leadingZeros}"]`
+                ).innerText;
+                document
+                    .querySelector('.select')
+                    .setAttribute('data-selected', settings.leadingZeros);
+                document.querySelector('.select span').innerText = selectedLeadingZeros;
+                document.querySelector('input[name="textLayerName"]').value =
+                    settings.textLayerName;
+                document.querySelector('input[name="optionalPrefix"]').value =
+                    settings.optionalPrefix;
+                const numberNodesElement = document.querySelector('input[name="numberNodes"]');
+                const ignoreNonFrameNodesElement = document.querySelector('input[name="ignoreNonFrameNodes"]');
+                const ignoreNonSlideNodesElement = document.querySelector('input[name="ignoreNonSlideNodes"]');
+                numberNodesElement.checked = settings.numberNodes;
+                ignoreNonFrameNodesElement.checked = settings.ignoreNonFrameNodes;
+                ignoreNonSlideNodesElement.checked = settings.ignoreNonSlideNodes || true;
+                styleCheckbox(numberNodesElement);
+                styleCheckbox(ignoreNonFrameNodesElement);
+                styleCheckbox(ignoreNonSlideNodesElement);
             }
         };
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -174,6 +229,9 @@
             var ignoreNonFrameNodes = document.querySelector(
                 'input[name="ignoreNonFrameNodes"]'
             ).checked;
+            var ignoreNonSlideNodes = document.querySelector(
+                'input[name="ignoreNonSlideNodes"]'
+            ).checked;
             var leadingZeros = Number(
                 document.querySelector('.select').getAttribute('data-selected')
             );
@@ -193,6 +251,7 @@
                 {
                     pluginMessage: {
                         ignoreNonFrameNodes,
+                        ignoreNonSlideNodes,
                         leadingZeros,
                         numberNodes,
                         optionalPrefix,
@@ -578,6 +637,38 @@
     .figma-light body .instruction-options {
         background-color: #eee;
     }
+
+    .summary-info {
+      margin: 16px 0 0 0;
+      padding: 0 16px;
+    }
+    .summary-title {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 120%;
+      letter-spacing: 1.65px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .summary-bullets {
+      margin: 0;
+      padding-left: 0;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 120%;
+      letter-spacing: 0.24px;
+      color: #fff;
+      text-transform: none;
+      list-style-position: inside;
+    }
+    .summary-bullets li {
+      margin-bottom: 4px;
+      text-transform: none;
+    }
+    .design-only, .slides-only {
+      display: none;
+    }
 </style>
 
 <body>
@@ -587,7 +678,7 @@
     <form>
         <div class="options-wrapper">
             <div class="select-wrapper">
-                <label for="leadingZeros">Leading zeros style:</label>
+                <label for="leadingZeros">Leading zeros style</label>
                 <div name="leadingZeros" class="select" data-selected="0">
                     <span>None</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -603,7 +694,7 @@
                 </div>
             </div>
             <div class="input-wrapper">
-                <label for="optionalPrefix">Optional prefix:<br />
+                <label for="optionalPrefix">Optional prefix<br />
                     <span class="example">(e.g. "Page&nbsp;" or "p.&nbsp;")</span></label>
                 <input type="text" name="optionalPrefix" />
             </div>
@@ -639,7 +730,7 @@
         </div>
         <div class="advanced-options-wrapper hidden" data-value="0">
             <div class="input-wrapper">
-                <label for="textLayerName">name of the text layers?</label>
+                <label for="textLayerName">Name of text layers to number</label>
                 <input type="text" name="textLayerName" value="page number" />
             </div>
             <div class="checkbox-container">
@@ -658,7 +749,7 @@
                     <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include
                         leading zeros)</label>
                 </div>
-                <div class="checkbox-wrapper">
+                <div class="checkbox-wrapper design-only" id="ignoreNonFrameNodesWrapper">
                     <div class="custom-checkbox checked">
                         <input type="checkbox" name="ignoreNonFrameNodes" checked />
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -672,8 +763,23 @@
                     </div>
                     <label for="ignoreNonFrameNodes">Ignore non-frame nodes</label>
                 </div>
+                <div class="checkbox-wrapper slides-only" id="ignoreNonSlideNodesWrapper" style="display: none;">
+                    <div class="custom-checkbox checked">
+                        <input type="checkbox" name="ignoreNonSlideNodes" checked />
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Group">
+                                <g id="Group_2">
+                                    <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white"
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <label for="ignoreNonSlideNodes">Ignore non-slide nodes</label>
+                </div>
             </div>
         </div>
+        <div id="summary-info" class="summary-info"></div>
         <div class="button-wrapper">
             <button id="runPlugin">Run!</button>
         </div>
@@ -693,11 +799,14 @@
             </li>
             <li>
                 Make sure every layer containing a page number is named &quot;page
-                number&quot;.
+                number&quot;. If you've already used a different layer name for all your page numbers, 
+                you can change it in the Advanced Options.
             </li>
-            <li>Every page or slide has to be framed.</li>
-            <li>Arrange the pages in rows, left to right.</li>
-            <li>Select all the framed pages.</li>
+            <li class="design-only">Every page has to be framed (although you can turn off the 
+                "Ignore non-frame nodes" option in the Advanced Options).</li>
+            <li class="design-only">Arrange the pages in rows, left to right.</li>
+            <li>Select all the slides or pages. Select even the slides that don't have a page number, 
+                like full-bleed image slides, so they are still counted</li>
             <li>Run the plugin.</li>
         </ul>
         <br />
