@@ -4,9 +4,13 @@
   "description": "Your Figma Plugin",
   "main": "code.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "watch": "tsc -p tsconfig.json --watch",
-    "lint": "npx eslint ./code.ts"
+    "build:plugin": "tsc",
+    "build:ui": "vite build --config ui/vite.config.js && cp ui/dist/index.html ui.html",
+    "build": "npm run build:plugin && npm run build:ui",
+    "watch:plugin": "tsc --watch",
+    "watch:ui": "vite --config ui/vite.config.js",
+    "watch": "concurrently \"npm:watch:plugin\" \"npm:watch:ui\"",
+    "clean": "rm -rf ui/dist node_modules ui.html assets"
   },
   "author": "",
   "license": "",
@@ -15,7 +19,10 @@
     "@figma/plugin-typings": "^1.109.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
+    "concurrently": "^8.2.2",
     "eslint": "^8.57.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^5.0.0",
+    "vite-plugin-singlefile": "^1.0.0"
   }
 }

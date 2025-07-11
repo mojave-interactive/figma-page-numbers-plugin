@@ -1,0 +1,404 @@
+@font-face {
+    font-family: "Sevarek";
+    src: url("https://mojave.agency/_nuxt/fonts/SeravekWebBold.ccf3a86.eot") format("eot"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWebBold.720acf0.ttf") format("ttf"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWebBold.085ee1f.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Seravek";
+    src: url("https://mojave.agency/_nuxt/fonts/SeravekWebMedium.ced1f8a.eot") format("eot"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWebMedium.3f054e0.ttf") format("ttf"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWebMedium.699065d.woff") format("woff");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Seravek";
+    src: url("https://mojave.agency/_nuxt/fonts/SeravekWebLight.c044347.eot") format("eot"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWebLight.a33041d.ttf") format("ttf"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWebLight.f2d22b2.woff") format("woff");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Seravek";
+    src: url("https://mojave.agency/_nuxt/fonts/SeravekWeb.68c8319.eot") format("eot"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWeb.e2c345c.ttf") format("ttf"),
+        url("https://mojave.agency/_nuxt/fonts/SeravekWeb.6779d41.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    width: 100%;
+}
+
+h1 {
+    margin: 0;
+}
+
+svg {
+    height: 16px;
+    width: 16px;
+}
+
+form {
+    margin-block-end: 0;
+}
+
+body {
+    width: 288px;
+    margin: 0;
+    overflow-x: clip;
+    font-family: "Seravek", sans-serif;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 40px;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block: 0;
+    padding-inline-start: 24px;
+}
+
+li {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 120%;
+    letter-spacing: 0.24px;
+}
+
+li:not(:last-child) {
+    margin-bottom: 16px;
+}
+
+.github-text {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 120%;
+    letter-spacing: 0.24px;
+}
+
+.github-text a {
+    color: currentColor;
+}
+
+.github-text span {
+    text-decoration-line: underline;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    border: 0.25px solid var(--Secondary-Light-grey, #eee);
+    background: var(--Secondary-Gray, #757575);
+    width: 5px;
+    height: 31px;
+    flex-shrink: 0;
+}
+
+input[type="text"],
+.select {
+    padding: 12px 16px;
+    border-radius: 4px;
+    border: 1px solid #24646d;
+    background: #effdff;
+    height: 32px;
+
+    color: #24646d;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 1.76px;
+}
+
+.select {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.button-wrapper {
+    padding: 24px 12px;
+}
+
+.button-wrapper button {
+    width: 100%;
+    height: 32px;
+    padding: 0;
+    border-radius: 16px;
+    border: unset;
+    cursor: pointer;
+
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 120%;
+    /* 19.2px */
+    letter-spacing: 2.56px;
+    text-transform: uppercase;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.select-options-wrapper {
+    position: absolute;
+    padding: 16px;
+    background: #ffffff;
+    display: flex;
+    border: 1px solid #24646d;
+    flex-direction: column;
+    gap: 16px;
+    width: 222px;
+    border-radius: 0px 4px 4px 4px;
+}
+
+.select-options-wrapper div {
+    cursor: pointer;
+    color: #24646d;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%;
+    /* 14.4px */
+    letter-spacing: 1.92px;
+}
+
+.custom-checkbox {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    position: relative;
+}
+
+.opened {
+    transform: rotate(180deg);
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    position: absolute;
+    margin: 0;
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+}
+
+input[type="text"]:focus-visible {
+    outline: unset;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.select-wrapper label,
+.input-wrapper label {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 120%;
+    /* 13.2px */
+    letter-spacing: 1.65px;
+    text-transform: uppercase;
+}
+
+label span.example {
+    font-weight: 400;
+    text-transform: none;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    gap: 8px;
+}
+
+.checkbox-wrapper label {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.24px;
+}
+
+.options {
+    padding: 12px 16px;
+}
+
+.advanced-options,
+.instruction-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.advanced-options {
+    padding: 8px 16px;
+}
+
+.instruction-options {
+    padding: 12px 16px;
+}
+
+.instruction-options h1 {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 120%;
+    /* 16.8px */
+    letter-spacing: 2.1px;
+    text-transform: uppercase;
+}
+
+.advanced-options h1,
+.advanced-options div {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 120%;
+    /* 13.2px */
+    letter-spacing: 1.65px;
+    text-transform: uppercase;
+}
+
+.options h1 {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 120%;
+    /* 16.8px */
+    letter-spacing: 2.1px;
+    text-transform: uppercase;
+}
+
+.options-wrapper {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.advanced-options-wrapper {
+    padding: 24px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.instruction-options-wrapper {
+    padding: 16px 16px 0px;
+}
+
+.created-by {
+    padding: 16px 16px 0;
+    margin-bottom: 16px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 120%;
+    letter-spacing: 0.24px;
+}
+
+.created-by a {
+    color: currentColor;
+}
+
+.advanced-options-wrapper .checkbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.figma-dark body {
+    background-color: #1f1e1e;
+    color: #effdff;
+}
+
+.figma-dark body .custom-checkbox {
+    background-color: #ffffff;
+    border: 1px solid #55929b;
+}
+
+.figma-light body {
+    background-color: #fff;
+    color: #24646d;
+}
+
+.figma-light body .custom-checkbox {
+    background-color: #ffffff;
+    border: 1px solid #24646d;
+}
+
+.figma-dark body .custom-checkbox.checked,
+.figma-dark body .button-wrapper button {
+    background-color: #55929b;
+}
+
+.figma-light .custom-checkbox.checked,
+.figma-light .button-wrapper button {
+    background-color: #24646d;
+}
+
+.figma-dark body .options,
+.figma-dark body .advanced-options,
+.figma-dark body .instruction-options {
+    background-color: #000;
+}
+
+.figma-light body .options,
+.figma-light body .advanced-options,
+.figma-light body .instruction-options {
+    background-color: #eee;
+}
+
+.summary-info {
+  margin: 16px 0 0 0;
+  padding: 0 16px;
+}
+.summary-title {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 120%;
+  letter-spacing: 1.65px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.summary-bullets {
+  margin: 0;
+  padding-left: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 0.24px;
+  color: #fff;
+  text-transform: none;
+  list-style-position: inside;
+}
+.summary-bullets li {
+  margin-bottom: 4px;
+  text-transform: none;
+}
+.design-only, .slides-only {
+  display: none;
+} 

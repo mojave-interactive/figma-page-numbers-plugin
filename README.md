@@ -24,7 +24,6 @@
 - Click the __Run!__ button.
 - The characters inside the `page number` text layers will be replaced with the page number of the containing frame. The selected frames or layers will be reordered in the layer panel accordingly.
 
-
 ## Things to know:
 - If a page is selected, but doesn't contain any text layers of the specified name (e.g. `page number`), the page counter will still increment. For example, you might not want to show a page number on a page that is a full-bleed image, but you still want an accurate page number on subsequent pages.
 - You can have as many page numbers on a page as you like. If there are multiple text layers of the specified name in one of the selected frames, they will all be populated with the same number
@@ -33,11 +32,48 @@
 - If anything goes wrong, use undo (ctrl-z or cmd-z)!
 
 ## For plugin developers:
-Requires Node 14.7 or greater. If you're having trouble with the default Node version on your system, look into nvm for managing Node versions.
 
-After loading the plugin into Figma, run:  
-`npm install`  
-`npm run build`
+### Prerequisites
+- Node.js 14.7 or greater
+- npm
+
+### Development Setup
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Development Workflow
+- **Build for production**: `npm run build`
+  - Compiles the TypeScript plugin code (`code.ts` → `code.js`)
+  - Builds and inlines the UI (`ui/` → `ui.html`)
+- **Watch mode for development**: `npm run watch`
+  - Watches both plugin code and UI for changes
+  - Rebuilds automatically when files change
+- **Clean build artifacts**: `npm run clean`
+  - Removes `ui/dist/`, `node_modules/`, `ui.html`, and `assets/`
+
+### Project Structure
+```
+figma-page-numbers-plugin/
+├── code.ts              # Main plugin code
+├── ui.html              # Built UI (generated)
+├── ui/                  # UI source files
+│   ├── index.html       # UI template
+│   ├── main.js          # UI JavaScript
+│   ├── style.css        # UI styles
+│   ├── src/             # Additional UI source files
+│   └── vite.config.js   # Vite configuration
+├── manifest.json        # Plugin manifest
+└── package.json         # Dependencies and scripts
+```
+
+### Publishing
+1. Run `npm run build` to generate production files
+2. Verify `ui.html` is generated and contains inlined CSS/JS
+3. Test the plugin in Figma
+4. Package and publish through Figma's plugin system
 
 ## Have something to say or add?
 Feedback and feature requests are welcomed! If you're thinking about submitting a PR, let's talk.

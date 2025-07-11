@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=288, initial-scale=1.0" />
+    <title>Page Numbers - pagination plugin</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="options">
+        <h1>Options</h1>
+    </div>
+    <form>
+        <div class="options-wrapper">
+            <div class="select-wrapper">
+                <label for="leadingZeros">Leading zeros style</label>
+                <div name="leadingZeros" class="select" data-selected="0">
+                    <span>None</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M3.9128 4.83754C3.685 4.60974 3.31565 4.60974 3.08785 4.83754C2.86004 5.06535 2.86004 5.43469 3.08785 5.6625L6.58785 9.1625C6.81565 9.39031 7.185 9.39031 7.4128 9.1625L10.9128 5.6625C11.1406 5.43469 11.1406 5.06535 10.9128 4.83754C10.685 4.60974 10.3157 4.60974 10.0878 4.83754L7.00033 7.92506L3.9128 4.83754Z" fill="#24646D" />
+                    </svg>
+                </div>
+                <div class="select-options-wrapper hidden" data-value="0">
+                    <div data-select-value="0">None</div>
+                    <div data-select-value="1">2-digit (e.g. 09, 10)</div>
+                    <div data-select-value="2">3-digit (e.g. 009, 010)</div>
+                </div>
+            </div>
+            <div class="input-wrapper">
+                <label for="optionalPrefix">Optional prefix<br />
+                    <span class="example">(e.g. "Page&nbsp;" or "p.&nbsp;")</span></label>
+                <input type="text" name="optionalPrefix" />
+            </div>
+            <div class="checkbox-wrapper">
+                <div class="custom-checkbox checked">
+                    <input type="checkbox" name="rememberSettings" checked />
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="Group">
+                            <g id="Group_2">
+                                <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <label for="rememberSettings">Remember my choices</label>
+            </div>
+        </div>
+        <div class="advanced-options">
+            <h1>Advanced Options:</h1>
+            <svg data-id="plus-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7.58301 2.91665C7.58301 2.59448 7.32184 2.33331 6.99967 2.33331C6.67751 2.33331 6.41634 2.59448 6.41634 2.91665V6.41665H2.91634C2.59418 6.41665 2.33301 6.67781 2.33301 6.99998C2.33301 7.32215 2.59418 7.58331 2.91634 7.58331H6.41634V11.0833C6.41634 11.4055 6.67751 11.6666 6.99967 11.6666C7.32184 11.6666 7.58301 11.4055 7.58301 11.0833V7.58331H11.083C11.4052 7.58331 11.6663 7.32215 11.6663 6.99998C11.6663 6.67781 11.4052 6.41665 11.083 6.41665H7.58301V2.91665Z" fill="currentColor" />
+            </svg>
+            <svg data-id="minus-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2.91634 6.41669C2.59418 6.41669 2.33301 6.67785 2.33301 7.00002C2.33301 7.32219 2.59418 7.58335 2.91634 7.58335H11.083C11.4052 7.58335 11.6663 7.32219 11.6663 7.00002C11.6663 6.67785 11.4052 6.41669 11.083 6.41669H2.91634Z" fill="currentColor" />
+            </svg>
+        </div>
+        <div class="advanced-options-wrapper hidden" data-value="0">
+            <div class="input-wrapper">
+                <label for="textLayerName">Name of text layers to number</label>
+                <input type="text" name="textLayerName" value="page number" />
+            </div>
+            <div class="checkbox-container">
+                <div class="checkbox-wrapper">
+                    <div class="custom-checkbox checked">
+                        <input type="checkbox" name="numberNodes" checked />
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Group">
+                                <g id="Group_2">
+                                    <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros)</label>
+                </div>
+                <div class="checkbox-wrapper design-only" id="ignoreNonFrameNodesWrapper">
+                    <div class="custom-checkbox checked">
+                        <input type="checkbox" name="ignoreNonFrameNodes" checked />
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Group">
+                                <g id="Group_2">
+                                    <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <label for="ignoreNonFrameNodes">Ignore non-frame nodes</label>
+                </div>
+                <div class="checkbox-wrapper slides-only" id="ignoreNonSlideNodesWrapper" style="display: none;">
+                    <div class="custom-checkbox checked">
+                        <input type="checkbox" name="ignoreNonSlideNodes" checked />
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Group">
+                                <g id="Group_2">
+                                    <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <label for="ignoreNonSlideNodes">Ignore non-slide nodes</label>
+                </div>
+            </div>
+        </div>
+        <div id="summary-info" class="summary-info"></div>
+        <div class="button-wrapper">
+            <button id="runPlugin">Run!</button>
+        </div>
+    </form>
+    <div class="instruction-options">
+        <h1>instructions</h1>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M5.03033 6.21967C4.73744 5.92678 4.26256 5.92678 3.96967 6.21967C3.67678 6.51256 3.67678 6.98744 3.96967 7.28033L8.46967 11.7803C8.76256 12.0732 9.23744 12.0732 9.53033 11.7803L14.0303 7.28033C14.3232 6.98744 14.3232 6.51256 14.0303 6.21967C13.7374 5.92678 13.2626 5.92678 12.9697 6.21967L9 10.1893L5.03033 6.21967Z" fill="currentColor" />
+        </svg>
+    </div>
+    <div class="instruction-options-wrapper hidden" data-value="0">
+        <ul>
+            <li>
+                Design your page numbers however you want, using placeholder numbers.
+            </li>
+            <li>
+                Make sure every layer containing a page number is named &quot;page number&quot;. If you've already used a different layer name for all your page numbers, you can change it in the Advanced Options.
+            </li>
+            <li class="design-only">Every page has to be framed (although you can turn off the "Ignore non-frame nodes" option in the Advanced Options).</li>
+            <li class="design-only">Arrange the pages in rows, left to right.</li>
+            <li>Select all the slides or pages. Select even the slides that don't have a page number, like full-bleed image slides, so they are still counted</li>
+            <li>Run the plugin.</li>
+        </ul>
+        <br />
+        <div class="github-text">
+            <div>
+                For more detailed instructions and the source code, visit our
+                <a href="https://github.com/mojave-interactive/figma-page-numbers-plugin/blob/main/README.md" target="_blank">GitHub README</a>.
+            </div>
+        </div>
+    </div>
+    <div class="created-by">
+        This plugin was created by
+        <a href="https://mojave.agency" target="_blank">Mojave Interactive</a>. You may submit feedback through our contact form.
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
