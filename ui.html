@@ -29,6 +29,52 @@
             checkboxEl.parentElement.classList.remove('checked');
         }
     }
+    function getPageSummary(data) {
+      let msg = `We count ${data.targetedCount ?? 0} pages.`;
+      if ((data.missingTextLayerCount ?? 0) > 0) {
+        msg += ` ${data.missingTextLayerCount} of them don't have a layer called '${data.textLayerName}', so they'll increment the page count, but won't be numbered.`;
+      }
+      return msg;
+    }
+
+    function getIgnoredNodesSummary(data, editorType) {
+      const ignoredNodes = data.ignoredCount ?? 0;
+      if (ignoredNodes > 0) {
+        const nodeType = editorType === 'slides' ? 'slides' : 'frames';
+        return `${ignoredNodes} selected nodes are being ignored because they are not ${nodeType}. You can disable this in advanced settings.`;
+      }
+      return null;
+    }
+
+    function getRenameSummary(data) {
+      if (data.numberSelectedNodes) {
+        return 'Selected nodes will be renamed.';
+      }
+      return null;
+    }
+
+    function renderSummary(data, editorType) {
+      const summaryInfo = document.getElementById('summary-info');
+      if (!summaryInfo) return;
+
+      let html = `<div class="summary-title">${data.targetedCount} FRAME${data.targetedCount === 1 ? '' : 'S'}`;
+      if (data.ignoredTypeCounts?.GROUP) {
+        html += `, ${data.ignoredTypeCounts.GROUP} GROUP${data.ignoredTypeCounts.GROUP === 1 ? '' : 'S'}`;
+      }
+      html += ' SELECTED</div>';
+
+      const bullets = [
+        getPageSummary(data),
+        getIgnoredNodesSummary(data, editorType),
+        getRenameSummary(data)
+      ].filter(Boolean);
+
+      if (bullets.length > 0) {
+        html += '<ul class="summary-bullets">' + bullets.map(b => `<li>${b}</li>`).join('') + '</ul>';
+      }
+
+      summaryInfo.innerHTML = html;
+    }
     window.onload = function () {
         onmessage = (event) => {
             if (event.data.pluginMessage && event.data.pluginMessage.type === 'selection-info') {
@@ -64,37 +110,7 @@
                 const typeCounts = data.selectedTypeCounts;
                 const typeStrings = Object.entries(typeCounts).map(([type, count]) => `${count} ${type}${count > 1 ? 's' : ''}`);
                 // Render summary info above the RUN! button
-                const summaryInfo = document.getElementById('summary-info');
-                if (summaryInfo) {
-                  let html = '';
-                  if (data.selectedCount > 0) {
-                    html += `<div class="summary-title">`;
-                    html += `${data.targetedCount} FRAME${data.targetedCount === 1 ? '' : 'S'}`;
-                    if (data.ignoredTypeCounts && data.ignoredTypeCounts['GROUP']) {
-                      html += `, ${data.ignoredTypeCounts['GROUP']} GROUP${data.ignoredTypeCounts['GROUP'] === 1 ? '' : 'S'}`;
-                    }
-                    html += ' SELECTED</div>';
-                    let bullets = [];
-                    // Always show the page count
-                    let pageMsg = `We count ${data.targetedCount} pages.`;
-                    if (data.missingTextLayerCount > 0) {
-                      pageMsg += ` ${data.missingTextLayerCount} of them don't have a layer called '${data.textLayerName}', so they'll increment the page count, but won't be numbered.`;
-                    }
-                    bullets.push(pageMsg);
-                    const ignoredNodes = data.ignoredCount || 0;
-                    if (ignoredNodes > 0) {
-                      const nodeType = editorType === 'slides' ? 'slides' : 'frames';
-                      bullets.push(`${ignoredNodes} selected nodes are being ignored because they are not ${nodeType}. You can disable this in advanced settings.`);
-                    }
-                    if (data.numberSelectedNodes) {
-                      bullets.push('Selected nodes will be renamed.');
-                    }
-                    if (bullets.length > 0) {
-                      html += '<ul class="summary-bullets">' + bullets.map(b => `<li>${b}</li>`).join('') + '</ul>';
-                    }
-                  }
-                  summaryInfo.innerHTML = html;
-                }
+                renderSummary(data, editorType);
                 // Update advanced option visibility based on editorType
                 if (editorType === 'slides') {
                   document.querySelectorAll('.slides-only').forEach(el => el.style.display = '');
