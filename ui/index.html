@@ -60,7 +60,7 @@
                 <input type="text" name="textLayerName" value="page number" />
             </div>
             <div class="checkbox-container">
-                <div class="checkbox-wrapper">
+                <div class="checkbox-wrapper design-only">
                     <div class="custom-checkbox checked">
                         <input type="checkbox" name="numberNodes" checked />
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -73,9 +73,9 @@
                     </div>
                     <label for="numberNodes">Prepend page number to frame name or layer name (doesn't include leading zeros)</label>
                 </div>
-                <div class="checkbox-wrapper design-only" id="ignoreNonFrameNodesWrapper">
+                <div class="checkbox-wrapper design-only" id="ignoreGroupsWrapper">
                     <div class="custom-checkbox checked">
-                        <input type="checkbox" name="ignoreNonFrameNodes" checked />
+                        <input type="checkbox" name="ignoreGroups" checked />
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="Group">
                                 <g id="Group_2">
@@ -84,20 +84,7 @@
                             </g>
                         </svg>
                     </div>
-                    <label for="ignoreNonFrameNodes">Ignore non-frame nodes</label>
-                </div>
-                <div class="checkbox-wrapper slides-only" id="ignoreNonSlideNodesWrapper" style="display: none;">
-                    <div class="custom-checkbox checked">
-                        <input type="checkbox" name="ignoreNonSlideNodes" checked />
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="Group">
-                                <g id="Group_2">
-                                    <path id="Path" d="M9.73327 3.43335L4.59994 8.56668L2.2666 6.23335" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                </g>
-                            </g>
-                        </svg>
-                    </div>
-                    <label for="ignoreNonSlideNodes">Ignore non-slide nodes</label>
+                    <label for="ignoreGroups">Ignore unframed groups</label>
                 </div>
             </div>
         </div>
@@ -120,7 +107,7 @@
             <li>
                 Make sure every layer containing a page number is named &quot;page number&quot;. If you've already used a different layer name for all your page numbers, you can change it in the Advanced Options.
             </li>
-            <li class="design-only">Every page has to be framed (although you can turn off the "Ignore non-frame nodes" option in the Advanced Options).</li>
+            <li class="design-only">Every page has to be framed (although you can include unframed groups in Advanced Options).</li>
             <li class="design-only">Arrange the pages in rows, left to right.</li>
             <li>Select all the slides or pages. Select even the slides that don't have a page number, like full-bleed image slides, so they are still counted</li>
             <li>Run the plugin.</li>

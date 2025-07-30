@@ -234,6 +234,7 @@ label span.example {
 
 .checkbox-wrapper {
     display: flex;
+    align-items: flex-start;
     gap: 8px;
 }
 
@@ -241,6 +242,7 @@ label span.example {
     font-size: 12px;
     font-weight: 400;
     letter-spacing: 0.24px;
+    flex: 1;
 }
 
 .options {

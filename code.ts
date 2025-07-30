@@ -18,8 +18,7 @@
  */
 class PageNumberer {
   selectedNodeMatrix: { x: number, y?: number, selectedNode: FrameNode | GroupNode | ComponentNode | SlideNode }[] = []
-  ignoreNonFrameNodes: boolean
-  ignoreNonSlideNodes: boolean
+  ignoreGroups: boolean
   layersToNumber: { layer: TextNode, number: number }[] = []
   leadingZeros: number
   lowestIndex: number = -1
@@ -30,24 +29,21 @@ class PageNumberer {
   nodesMissingTextLayer: (FrameNode | GroupNode | ComponentNode | SlideNode)[] = []
 
   constructor(
-      ignoreNonFrameNodes: boolean = true, 
-      ignoreNonSlideNodes: boolean = true,
+      ignoreGroups: boolean = true,
       leadingZeros: number = 0, 
       numberNodes: boolean = true, 
       optionalPrefix: string = "",
       rememberSettings: boolean = false,
       textLayerName: string = "page number"
     ) {
-    this.ignoreNonFrameNodes = ignoreNonFrameNodes
-    this.ignoreNonSlideNodes = ignoreNonSlideNodes
+    this.ignoreGroups = ignoreGroups
     this.leadingZeros = leadingZeros
     this.numberSelectedNodes = numberNodes
     this.optionalPrefix = optionalPrefix
     this.textLayerName = textLayerName
     if (rememberSettings) {
       figma.clientStorage.setAsync('pageNumbererSettings', {
-        ignoreNonFrameNodes: ignoreNonFrameNodes,
-        ignoreNonSlideNodes: ignoreNonSlideNodes,
+        ignoreGroups: ignoreGroups,
         leadingZeros: leadingZeros,
         numberNodes: numberNodes,
         optionalPrefix: optionalPrefix,
@@ -75,7 +71,14 @@ class PageNumberer {
 
     for (const node of selectedNodes) {
       if (this.isNodeWithChildren(node) && node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
-        if (this.ignoreNonFrameNodes && node.type !== 'FRAME') {
+        // Only support frames and groups in design editor
+        if (node.type !== 'FRAME' && node.type !== 'GROUP') {
+          this.ignoredNodes.push(node);
+          continue
+        }
+        
+        // If ignoring groups and this is a group, ignore it
+        if (this.ignoreGroups && node.type === 'GROUP') {
           this.ignoredNodes.push(node);
           continue
         }
@@ -175,7 +178,8 @@ class PageNumberer {
     
     for (const node of selectedNodes) {
       if (this.isNodeWithChildren(node) && node.visible && typeof node.children !== 'undefined' && node.children.length > 0) {
-        if (this.ignoreNonSlideNodes && node.type !== 'SLIDE') {
+        // Only support slides in slides editor
+        if (node.type !== 'SLIDE') {
           this.ignoredNodes.push(node);
           continue
         }
@@ -253,17 +257,15 @@ function sendSelectionInfo() {
   // Use default settings for preview (or retrieve from storage if needed)
   figma.clientStorage.getAsync('pageNumbererSettings').then((settings) => {
     const opts = settings || {
-      ignoreNonFrameNodes: true,
-      ignoreNonSlideNodes: true,
+      ignoreGroups: true,
       leadingZeros: 0,
       numberNodes: true,
       optionalPrefix: '',
-      rememberSettings: false,
+      rememberSettings: true,
       textLayerName: 'page number'
     };
     const pageNumberer = new PageNumberer(
-      opts.ignoreNonFrameNodes,
-      opts.ignoreNonSlideNodes,
+      opts.ignoreGroups,
       opts.leadingZeros,
       opts.numberNodes,
       opts.optionalPrefix,
@@ -289,8 +291,7 @@ figma.ui.onmessage = (message) => {
     // If previewOnly, just send summary for UI update
     if (message.previewOnly) {
       const pageNumberer = new PageNumberer(
-        message.ignoreNonFrameNodes, 
-        message.ignoreNonSlideNodes,
+        message.ignoreGroups,
         message.leadingZeros, 
         message.numberNodes, 
         message.optionalPrefix,
@@ -302,8 +303,7 @@ figma.ui.onmessage = (message) => {
     }
     // Otherwise, run the plugin as normal
     const pageNumberer = new PageNumberer(
-      message.ignoreNonFrameNodes, 
-      message.ignoreNonSlideNodes,
+      message.ignoreGroups,
       message.leadingZeros, 
       message.numberNodes, 
       message.optionalPrefix,
